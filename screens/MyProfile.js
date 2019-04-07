@@ -3,29 +3,36 @@ import { ScrollView, StyleSheet, Button, AsyncStorage } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea } from 'native-base'
 
 import { debounce } from "lodash";
+import moment from 'moment'
 import TextInput from '../components/fixedLabel'
 
+export default class MyProfile extends React.Component {
 
-retrieveData = async (key) => {
-  try {
-    return await AsyncStorage.getItem(key);
-  } catch (error) {
-    // Error retrieving data
+  constructor(props) {
+    super(props)
+    this.state = {
+      firstName: 'John',
+      lastName: 'Doe',
+      birthday: new moment(),
+      phone: '(480)555-5555',
+      email: 'test@gmail.com',
+      address: '123 Main St, San Francisco, California, 90215'
+    }
   }
-};
 
-export default class ProfileScreen extends React.Component {
   static navigationOptions = {
-    title: 'Profile',
-  };
+    title: 'My Profile',
+  }
 
-  state = {
-    firstName: this.props.navigation.getParam('firstName'),
-    lastName: this.props.navigation.getParam('lastName'),
-    birthday: new Date(),
-    phone: this.props.navigation.getParam('phone'),
-    email: this.props.navigation.getParam('email'),
-    address: this.props.navigation.getParam('address')
+  async componentDidMount() {
+    try {
+      state = await AsyncStorage.getItem('@shellCRM:owner') 
+      this.setState( JSON.parse(state))
+      console.log(this.state)
+    }
+    catch(error) {
+      alert("error getting profile: ", error)
+    }
   }
 
   handleTextUpdate = (text, prop) => {
@@ -34,18 +41,15 @@ export default class ProfileScreen extends React.Component {
 
   handleFormUpdate = async () => {
     try {
-      await AsyncStorage.setItem('@shellCRM:owner', this.state);
+      await AsyncStorage.setItem('@shellCRM:owner', JSON.stringify(this.state));
+      alert("Profile updated!")
     } catch (error) {
-      // Error saving data
+      alert('Error saving data: ', error)
     }
   }
 
-  componentWillUpdate() {
-    console.log(this.state)
-  }
-
   getFormattedBirthday = (date) => {
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+    return moment(date).format("MMMM Do YYYY")
   }
 
   render() {
