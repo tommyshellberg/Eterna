@@ -5,6 +5,7 @@
             "firstName": "Thomas",
             "lastName": "Shellberg",
             "birthday": null,
+            "phone": "(480)555-5555",
             "email": "thomas@shellberg.com",
             "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
         },
@@ -12,6 +13,7 @@
             "id": 2,
             "firstName": "Aaron",
             "lastName": "Bennet",
+            "phone": "(480)555-5555",
             "birthday": null,
             "email": "sldkfsldkf@lgfkdfgj.com",
             "address": "830 Lipan St, Denver, CO, 80204"
@@ -20,6 +22,7 @@
             "id": 3,
             "firstName": "Ali",
             "lastName": "Connors",
+            "phone": "(480)555-5555",
             "birthday": null,
             "email": "sldkfsldkf@lgfkdfgj.com",
             "address": "832 Lipan St, Denver, CO, 80204"
@@ -28,6 +31,7 @@
             "id": 4,
             "firstName": "Duck",
             "lastName": "Duckerson",
+            "phone": "(480)555-5555",
             "birthday": null,
             "email": "sldkfsldkf@lgfkdfgj.com",
             "address": "833 Lipan St, Denver, CO, 80204"
@@ -36,6 +40,7 @@
             "id": 5,
             "firstName": "Bradley",
             "lastName": "Horowitz",
+            "phone": "(480)555-5555",
             "birthday": null,
             "email": "sldkfsldkf@lgfkdfgj.com",
             "address": "838 Lipan St, Denver, CO, 80204"

@@ -5,7 +5,11 @@ export default class FloatingLabelExample extends Component {
     return (
             <Item fixedLabel>
               <Label>{this.props.label}</Label>
-              <Input placeholder={this.props.placeholder}/>
+              <Input 
+                placeholder={this.props.placeholder}
+                onChangeText={ (text) => this.props.handleTextUpdate(text, this.props.prop) }
+                value={this.props.value}
+              />
             </Item>
     )
   }

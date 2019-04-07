@@ -4,67 +4,35 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 import { List, ListItem, Text } from 'native-base'
-import { MonoText } from '../components/StyledText';
+import {contacts} from '../data/contacts.json'
 
 export default class HomeScreen extends React.Component {
+
+  constructor(props) {
+    super(props)
+  }
+
   static navigationOptions = {
     title: 'Contacts'
-  };
+  }
+
+  renderListItem = (contact) => {
+    return (
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact) } key={contact.id}>
+        <Text>{`${contact.firstName} ${contact.lastName}`}</Text>
+      </ListItem>
+    )
+  }
 
   render() {
     return (
       <ScrollView style={styles.container}>
         <List>
-          <ListItem itemDivider>
-            <Text>A</Text>
-          </ListItem>                    
-          <ListItem>
-            <Text>Aaron Bennet</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Ali Connors</Text>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>B</Text>
-          </ListItem>  
-          <ListItem>
-            <Text>Bradley Horowitz</Text>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>C</Text>
-          </ListItem>  
-          <ListItem>
-            <Text>Chuck Chuckerson</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Chula Chuckerson</Text>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>D</Text>
-          </ListItem>  
-          <ListItem>
-            <Text>Darrel Darrelson</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Debbie Darrelson</Text>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>E</Text>
-          </ListItem>  
-          <ListItem>
-            <Text>Eric Ericksson</Text>
-          </ListItem>
-          <ListItem itemDivider>
-            <Text>F</Text>
-          </ListItem>  
-          <ListItem>
-            <Text>Frank Franksson</Text>
-          </ListItem>
+          { contacts.map( contact => this.renderListItem(contact) ) }
         </List>
       </ScrollView>
     )

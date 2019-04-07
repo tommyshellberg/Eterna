@@ -7,9 +7,15 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import BirthdayScreen from '../screens/BirthdayScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-});
+const HomeStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Profile: ProfileScreen 
+  },
+  {
+    initialRouteName: "Home"
+  }
+)
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Contacts',
