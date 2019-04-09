@@ -2,9 +2,9 @@ import React from 'react';
 import { ScrollView, StyleSheet, Button, AsyncStorage } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea } from 'native-base'
 
-import { debounce } from "lodash";
 import moment from 'moment'
 import TextInput from '../components/fixedLabel'
+import CustomDatePicker from '../components/DatePicker'
 
 export default class MyProfile extends React.Component {
 
@@ -28,11 +28,14 @@ export default class MyProfile extends React.Component {
     try {
       state = await AsyncStorage.getItem('@shellCRM:owner') 
       this.setState( JSON.parse(state))
-      console.log(this.state)
     }
     catch(error) {
       alert("error getting profile: ", error)
     }
+  }
+
+  componentDidUpdate() {
+    console.log(this.state)
   }
 
   handleTextUpdate = (text, prop) => {
@@ -50,6 +53,10 @@ export default class MyProfile extends React.Component {
 
   getFormattedBirthday = (date) => {
     return moment(date).format("MMMM Do YYYY")
+  }
+
+  handleBirthdayUpdate = ( date ) => {
+    this.setState({ birthday: date })
   }
 
   render() {
@@ -89,7 +96,11 @@ export default class MyProfile extends React.Component {
           </CardItem>
           <CardItem>
             <Body>
-              <TextInput label="Birthday" placeholder={this.getFormattedBirthday(this.state.birthday)}/>
+              <CustomDatePicker
+                handleDateChange={this.handleBirthdayUpdate}
+                selectedDate={this.state.birthday}
+                formattedDate={this.getFormattedBirthday(this.state.birthday)}
+              />
             </Body>
           </CardItem>
         </Card>
