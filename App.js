@@ -1,12 +1,26 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
+import firebase from '@firebase/app'
+
 import AppNavigator from './navigation/AppNavigator';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
   };
+
+  componentWillMount() {
+    const config = {
+      apiKey: "AIzaSyBfPgnFti35J4GQDUTU_Yf9_wSM9-d-lQs",
+      authDomain: "shellcrm-48104.firebaseapp.com",
+      databaseURL: "https://shellcrm-48104.firebaseio.com",
+      projectId: "shellcrm-48104",
+      storageBucket: "shellcrm-48104.appspot.com",
+      messagingSenderId: "812296684473"
+    }
+    firebase.initializeApp(config);
+  }
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
@@ -38,7 +52,7 @@ export default class App extends React.Component {
         ...Icon.Ionicons.font,
         // We include SpaceMono because we use it in HomeScreen.js. Feel free
         // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
       }),
     ]);
   };
