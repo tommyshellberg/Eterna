@@ -1,5 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 import SignInScreen from '../screens/SignInScreen'
+import RegisterScreen from '../screens/RegisterScreen'
 
 export default createStackNavigator({
     Login: {
@@ -9,10 +10,10 @@ export default createStackNavigator({
         headerBackTitle: null
       }),
     },
-    Reset: {
-      screen: SignInScreen,
+    Register: {
+      screen: RegisterScreen,
       navigationOptions: () => ({
-        title: `Reset Password`,
+        title: `Register`,
       }),
     }
   });

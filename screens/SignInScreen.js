@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet} from 'react-native'
-import { Button, Text, Card, CardItem, Input, Spinner, Container } from 'native-base'
+import { StyleSheet, ImageBackground } from 'react-native'
+import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 
@@ -15,7 +15,11 @@ class LoginForm extends React.Component {
         }
     }
 
-    onButtonPress = () => {
+    onRegisterPress = () => {
+        this.props.navigation.navigate("Register")
+    }
+
+    onLoginPress = () => {
         const {email, password} = this.state
         this.loginUser(email, password)
     }
@@ -28,7 +32,7 @@ class LoginForm extends React.Component {
         this.setState({password})
     }
 
-    loginUser(email, password) {
+    loginUser (email, password) {
         this.setState({loading: true})
         
         firebase.auth().signInWithEmailAndPassword(email, password)
@@ -48,36 +52,54 @@ class LoginForm extends React.Component {
 
     render() {
         return(
-            <Container>
-                <Card>
-                    <CardItem>
-                    <Input 
-                        label="Email"
-                        placeholder="thomas@shellberg.com"
-                        value={this.state.email}
-                        onChangeText={email => this.onEmailChange(email)}
-                        secure={false}
-                    />
-                    </CardItem>
+            <ImageBackground source={require('../assets/images/sunbgimage.png')} style={{width: '100%', height: '100%'}} imageStye={{resizeMode: 'stretch'}}>
+                <Container style={styles.container}>
+                    <Card>
+                        <CardItem>
+                        <Item fixedLabel>
+                            <Label>Email</Label>
+                            <Input
+                                placeholder="thomas@shellberg.com"
+                                value={this.state.email}
+                                onChangeText={email => this.onEmailChange(email)}
+                                secure={false}
+                            />
+                        </Item>
+                        </CardItem>
 
-                    <CardItem>
-                        <Input 
-                            label="Password"
-                            placeholder="reallybigones"
-                            value={this.state.password}
-                            onChangeText={password => this.onPasswordChange(password)}
-                            secure={true}
-                        />
-                    </CardItem>
-                </Card>
-                    { !this.props.loading && <Button block onPress={this.onButtonPress}><Text>Login</Text></Button> }
-                    { this.props.loading && <Spinner color="blue"/> }
-            </Container>
+                        <CardItem>
+                            <Item fixedLabel>
+                                <Label>Password</Label>
+                                <Input
+                                    placeholder="reallybigones"
+                                    value={this.state.password}
+                                    onChangeText={password => this.onPasswordChange(password)}
+                                    secure={true}
+                                />
+                            </Item>
+                        </CardItem>
+                    </Card>
+                        { !this.props.loading && <Button block style={styles.button} onPress={this.onLoginPress}><Text>Login</Text></Button> }
+                        { !this.props.loading && <Button block style={styles.button} onPress={this.onRegisterPress}><Text>Register</Text></Button> }
+                        { this.props.loading && <Spinner color="blue"/> }
+                </Container>
+            </ImageBackground>
         )
     }
 }
+
+// TODO: add a splash screen background image.
+// TODO: center the container on the screen
 const styles = StyleSheet.create({
-    
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignSelf: 'center'
+    },
+    button: {
+        marginTop: 20
+    },
     errorText: {
         fontSize: 20,
         alignSelf: 'center',
