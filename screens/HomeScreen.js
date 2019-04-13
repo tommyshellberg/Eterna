@@ -7,18 +7,28 @@ import {
   View,
 } from 'react-native';
 
-import { List, ListItem, Text } from 'native-base'
-import {contacts} from '../data/contacts.json'
+import firebase from '@firebase/app'
+import '@firebase/auth'
+import '@firebase/database'
+
+import { FlatList } from 'react-native'
+import { ListItem, Text } from 'native-base'
 
 export default class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props)
+    this.state = {
+      contacts: []
+    }
+    db = firebase.database();
   }
 
   static navigationOptions = {
     title: 'Contacts'
   }
+
+  // TODO: Make sure the list can be refreshed by swiping up
 
   renderListItem = (contact) => {
     return (
@@ -28,12 +38,31 @@ export default class HomeScreen extends React.Component {
     )
   }
 
+  checkLoginStatus() {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        return user
+        // ...
+      } else {
+        return null
+      }
+    });
+  }
+
+  updateContacts(contacts) {
+    this.setState({ contacts })
+  }
+
   render() {
+    const userId = firebase.auth().currentUser.uid;
+    console.log(userId)
+    db.ref(`users/${userId}/contacts/`).once('value').then( (snapshot ) => { console.log(snapshot.val())})
     return (
       <ScrollView style={styles.container}>
-        <List>
-          { contacts.map( contact => this.renderListItem(contact) ) }
-        </List>
+        <FlatList 
+          data={this.state.contacts}
+          renderItem = { (item) => this.renderListItem(item) }
+        />
       </ScrollView>
     )
   }

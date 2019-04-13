@@ -10,7 +10,7 @@ export default class App extends React.Component {
     isLoadingComplete: false,
   };
 
-  componentWillMount() {
+  async componentWillMount() {
     const config = {
       apiKey: "AIzaSyBfPgnFti35J4GQDUTU_Yf9_wSM9-d-lQs",
       authDomain: "shellcrm-48104.firebaseapp.com",
@@ -19,7 +19,9 @@ export default class App extends React.Component {
       storageBucket: "shellcrm-48104.appspot.com",
       messagingSenderId: "812296684473"
     }
-    firebase.initializeApp(config);
+    if(!firebase.apps.length) {
+      await firebase.initializeApp(config);
+    }
   }
 
   render() {

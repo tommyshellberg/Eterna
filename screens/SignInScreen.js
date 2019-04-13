@@ -39,8 +39,15 @@ class LoginForm extends React.Component {
             .then( () => {
                 alert('successfully signed in!')
                 this.setState({loading: false})
-                }
-                )
+                this.props.navigation.navigate('Main')
+                })
+            .then( () => {
+                // TODO: handle the current user auth.
+                //const { currentUser } = firebase.auth()
+                //console.log( 'Current user: ' + currentUser )
+                //firebase.database().ref('/users/')
+                //.push(currentUser)
+            })
             .catch( () => {
                 alert('failed to sign in!')
                 this.setState({loading: false})
@@ -51,6 +58,7 @@ class LoginForm extends React.Component {
     }
 
     render() {
+        //console.log(firebase.app())
         return(
             <ImageBackground source={require('../assets/images/sunbgimage.png')} style={{width: '100%', height: '100%'}} imageStye={{resizeMode: 'stretch'}}>
                 <Container style={styles.container}>

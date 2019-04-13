@@ -35,8 +35,7 @@ class RegisterForm extends React.Component {
             .then( () => {
                 alert('Successfully registered!')
                 this.setState({loading: false})
-                }
-                )
+                })
             .catch( () => {
                 alert('Failed to register!')
                 this.setState({loading: false})
