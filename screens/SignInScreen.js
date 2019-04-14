@@ -32,6 +32,10 @@ class LoginForm extends React.Component {
         this.setState({password})
     }
 
+    onResetPress= () => {
+        this.props.navigation.navigate('Reset')
+    }
+
     loginUser (email, password) {
         this.setState({loading: true})
         
@@ -89,6 +93,7 @@ class LoginForm extends React.Component {
                     </Card>
                         { !this.props.loading && <Button block style={styles.button} onPress={this.onLoginPress}><Text>Login</Text></Button> }
                         { !this.props.loading && <Button block style={styles.button} onPress={this.onRegisterPress}><Text>Register</Text></Button> }
+                        { !this.props.loading && <Button block style={styles.button} onPress={this.onResetPress}><Text>Forgot Password?</Text></Button> }
                         { this.props.loading && <Spinner color="blue"/> }
                 </Container>
             </ImageBackground>
