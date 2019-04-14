@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 
+import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
@@ -26,6 +27,14 @@ export default class HomeScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Contacts'
+  }
+
+  componentWillMount() {
+    const userId = firebase.auth().currentUser.uid;
+    contacts = db.ref(`users/${userId}/contacts`)
+    contacts.on('value', (snapshot) => {
+      this.updateContacts(snapshot.val());
+    });
   }
 
   // TODO: Make sure the list can be refreshed by swiping up
@@ -50,18 +59,18 @@ export default class HomeScreen extends React.Component {
   }
 
   updateContacts(contacts) {
-    this.setState({ contacts })
+    this.setState({ contacts: _.values(contacts) })
+  }
+
+  componentDidUpdate() {
   }
 
   render() {
-    const userId = firebase.auth().currentUser.uid;
-    console.log(userId)
-    db.ref(`users/${userId}/contacts/`).once('value').then( (snapshot ) => { console.log(snapshot.val())})
     return (
       <ScrollView style={styles.container}>
         <FlatList 
           data={this.state.contacts}
-          renderItem = { (item) => this.renderListItem(item) }
+          renderItem = { ({item}) => this.renderListItem(item) }
         />
       </ScrollView>
     )
