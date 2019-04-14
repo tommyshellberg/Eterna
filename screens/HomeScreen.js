@@ -38,10 +38,11 @@ export default class HomeScreen extends React.Component {
   }
 
   // TODO: Make sure the list can be refreshed by swiping up
+  // TODO: grab the key in the db for each contact and send it as a prop to the Profile page.
 
   renderListItem = (contact) => {
     return (
-      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact) } key={contact.id}>
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact) } id={contact.id}>
         <Text>{`${contact.firstName} ${contact.lastName}`}</Text>
       </ListItem>
     )

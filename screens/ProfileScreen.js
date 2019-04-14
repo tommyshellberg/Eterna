@@ -1,51 +1,60 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Button, AsyncStorage } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea } from 'native-base'
+import moment from 'moment'
+import firebase from '@firebase/app'
+import '@firebase/auth'
+import '@firebase/database'
 
-import { debounce } from "lodash";
 import TextInput from '../components/fixedLabel'
-
-
-retrieveData = async (key) => {
-  try {
-    return await AsyncStorage.getItem(key);
-  } catch (error) {
-    // Error retrieving data
-  }
-};
+import CustomDatePicker from '../components/DatePicker'
 
 export default class ProfileScreen extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      firstName: this.props.navigation.getParam('firstName'),
+      lastName: this.props.navigation.getParam('lastName'),
+      birthday: this.props.navigation.getParam('birthday') || new Date(),
+      phone: this.props.navigation.getParam('phone'),
+      email: this.props.navigation.getParam('email'),
+      address: this.props.navigation.getParam('address')
+    }
+    this.userId = ''
+    db = firebase.database();
+  }
+
   static navigationOptions = {
     title: 'Profile',
   };
 
-  state = {
-    firstName: this.props.navigation.getParam('firstName'),
-    lastName: this.props.navigation.getParam('lastName'),
-    birthday: new Date(),
-    phone: this.props.navigation.getParam('phone'),
-    email: this.props.navigation.getParam('email'),
-    address: this.props.navigation.getParam('address')
+  async componentDidMount() {
+    this.userId = await firebase.auth().currentUser.uid;
+    console.log(this.props.key)
   }
 
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text}) 
   }
 
-  handleFormUpdate = async () => {
-    try {
-      await AsyncStorage.setItem('@shellCRM:owner', this.state);
-    } catch (error) {
-      // Error saving data
+  //TODO: pass the user key as prop from HomeScreen
+  handleStateUpdate() {
+    db.ref(`users/${this.userId}/contacts/${this.props.id}`).update(this.state)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if ( prevState !== this.state ) {
+      this.handleStateUpdate()
     }
   }
 
-  componentWillUpdate() {
-    console.log(this.state)
+  getFormattedBirthday = (date) => {
+    return moment(date).format("MMMM Do YYYY")
   }
 
-  getFormattedBirthday = (date) => {
-    return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+  handleBirthdayUpdate = ( date ) => {
+    this.setState({ birthday: date })
   }
 
   render() {
@@ -85,7 +94,11 @@ export default class ProfileScreen extends React.Component {
           </CardItem>
           <CardItem>
             <Body>
-              <TextInput label="Birthday" placeholder={this.getFormattedBirthday(this.state.birthday)}/>
+              <CustomDatePicker
+                handleDateChange={this.handleBirthdayUpdate}
+                selectedDate={this.state.birthday}
+                formattedDate={this.getFormattedBirthday(this.state.birthday)}
+              />
             </Body>
           </CardItem>
         </Card>
@@ -131,8 +144,6 @@ export default class ProfileScreen extends React.Component {
             </Body>
           </CardItem>
         </Card>
-          <Button onPress={this.handleFormUpdate}
-                  title="Update" />
         </Form>
       </ScrollView>
     );
