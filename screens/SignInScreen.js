@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, ImageBackground } from 'react-native'
+import { StyleSheet, ImageBackground, View } from 'react-native'
 import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
 import firebase from '@firebase/app'
 import '@firebase/auth'
@@ -62,10 +62,9 @@ class LoginForm extends React.Component {
     }
 
     render() {
-        //console.log(firebase.app())
         return(
-            <ImageBackground source={require('../assets/images/sunbgimage.png')} style={{width: '100%', height: '100%'}} imageStye={{resizeMode: 'stretch'}}>
-                <Container style={styles.container}>
+            <ImageBackground source={require('../assets/images/sunbgimage.png')} style={styles.bgImage}>
+                <View style={styles.container}>
                     <Card>
                         <CardItem>
                         <Item fixedLabel>
@@ -95,7 +94,7 @@ class LoginForm extends React.Component {
                         { !this.props.loading && <Button block style={styles.button} onPress={this.onRegisterPress}><Text>Register</Text></Button> }
                         { !this.props.loading && <Button block style={styles.button} onPress={this.onResetPress}><Text>Forgot Password?</Text></Button> }
                         { this.props.loading && <Spinner color="blue"/> }
-                </Container>
+                </View>
             </ImageBackground>
         )
     }
@@ -112,6 +111,11 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20
+    },
+    bgImage: {
+        width: '100%', 
+        height: '100%', 
+        flex: 1
     },
     errorText: {
         fontSize: 20,
