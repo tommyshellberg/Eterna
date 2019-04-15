@@ -14,12 +14,12 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      firstName: this.props.navigation.getParam('firstName'),
-      lastName: this.props.navigation.getParam('lastName'),
-      birthday: this.props.navigation.getParam('birthday') || new Date(),
-      phone: this.props.navigation.getParam('phone'),
-      email: this.props.navigation.getParam('email'),
-      address: this.props.navigation.getParam('address')
+      firstName: this.props.navigation.state.params.details.firstName,
+      lastName: this.props.navigation.state.params.details.lastName,
+      birthday: this.props.navigation.state.params.details.birthday || new Date(),
+      phone: this.props.navigation.state.params.details.phone,
+      email: this.props.navigation.state.params.details.email,
+      address: this.props.navigation.state.params.details.address
     }
     this.userId = ''
     db = firebase.database();
@@ -31,7 +31,6 @@ export default class ProfileScreen extends React.Component {
 
   async componentDidMount() {
     this.userId = await firebase.auth().currentUser.uid;
-    console.log(this.props.key)
   }
 
   handleTextUpdate = (text, prop) => {
@@ -40,7 +39,12 @@ export default class ProfileScreen extends React.Component {
 
   //TODO: pass the user key as prop from HomeScreen
   handleStateUpdate() {
-    db.ref(`users/${this.userId}/contacts/${this.props.id}`).update(this.state)
+    console.log('setting state in db')
+    console.log(this.state)
+    db.ref(`users/${this.userId}/contacts/${this.props.navigation.getParam('id')}`)
+    .set(this.state)
+    .then( () => console.log('successfully updated'))
+    .catch ( (error) => console.log('failed to update record!'))
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -54,7 +58,7 @@ export default class ProfileScreen extends React.Component {
   }
 
   handleBirthdayUpdate = ( date ) => {
-    this.setState({ birthday: date })
+    this.setState({ birthday: date.toString() })
   }
 
   render() {

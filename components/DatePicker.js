@@ -32,7 +32,7 @@ export default class CustomDatePicker extends Component {
             androidMode={"default"}
             placeHolderText={this.props.formattedDate}
             textStyle={{ color: "green" }}
-            placeHolderTextStyle={{ color: "#d3d3d3" }}
+            placeHolderTextStyle={{ color: "#222" }}
             onDateChange={this.setDate}
             disabled={false}
             />

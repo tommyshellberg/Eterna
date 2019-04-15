@@ -33,8 +33,15 @@ export default class HomeScreen extends React.Component {
     const userId = firebase.auth().currentUser.uid;
     contacts = db.ref(`users/${userId}/contacts`)
     contacts.on('value', (snapshot) => {
-      this.updateContacts(snapshot.val());
-    });
+      let fullContacts = []
+      snapshot.forEach( (child) => {
+        fullContacts.push({
+          id: child.key,
+          details: child.val()
+        })
+      })
+      this.updateContacts(fullContacts)
+    })
   }
 
   // TODO: Make sure the list can be refreshed by swiping up
@@ -42,8 +49,8 @@ export default class HomeScreen extends React.Component {
 
   renderListItem = (contact) => {
     return (
-      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact) } id={contact.id}>
-        <Text>{`${contact.firstName} ${contact.lastName}`}</Text>
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact)}>
+        <Text>{`${contact.details.firstName} ${contact.details.lastName}`}</Text>
       </ListItem>
     )
   }
@@ -60,7 +67,7 @@ export default class HomeScreen extends React.Component {
   }
 
   updateContacts(contacts) {
-    this.setState({ contacts: _.values(contacts) })
+    this.setState({ contacts })
   }
 
   componentDidUpdate() {

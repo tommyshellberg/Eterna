@@ -10,7 +10,7 @@ class LoginForm extends React.Component {
         super(props)
         this.state = {
             email: 'thomas@shellberg.com',
-            password: 'reallybigones',
+            password: 'superbigones',
             loading: false
         }
     }
@@ -82,7 +82,7 @@ class LoginForm extends React.Component {
                             <Item fixedLabel>
                                 <Label>Password</Label>
                                 <Input
-                                    placeholder="reallybigones"
+                                    placeholder="superbigones"
                                     value={this.state.password}
                                     onChangeText={password => this.onPasswordChange(password)}
                                     secure={true}
