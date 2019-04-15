@@ -2,7 +2,8 @@ import React from 'react';
 import { ScrollView, StyleSheet, Button, AsyncStorage } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea } from 'native-base'
 import moment from 'moment'
-import firebase from '@firebase/app'
+import { debounce } from 'lodash'
+import {firebase} from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
 
@@ -38,17 +39,18 @@ export default class ProfileScreen extends React.Component {
   }
 
   //TODO: pass the user key as prop from HomeScreen
-  handleStateUpdate() {
-    console.log('setting state in db')
-    console.log(this.state)
+  handleStateUpdate = debounce( () => {
+    console.log('calling handleStateUpdate')
     db.ref(`users/${this.userId}/contacts/${this.props.navigation.getParam('id')}`)
     .set(this.state)
-    .then( () => console.log('successfully updated'))
-    .catch ( (error) => console.log('failed to update record!'))
-  }
+    .then( () => alert('successfully updated'))
+    .catch ( (error) => alert('failed to update record!'))
+  }, 1000)
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log('calling componentDidUpdate')
     if ( prevState !== this.state ) {
+      console.log('state is different, updating')
       this.handleStateUpdate()
     }
   }
