@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+import { Spinner } from 'native-base'
+
 import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
@@ -20,7 +22,8 @@ export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      contacts: []
+      contacts: [],
+      loading: true
     }
     db = firebase.database();
   }
@@ -67,7 +70,10 @@ export default class HomeScreen extends React.Component {
   }
 
   updateContacts(contacts) {
-    this.setState({ contacts })
+    this.setState({ 
+      contacts,
+      loading: false
+     })
   }
 
   componentDidUpdate() {
@@ -76,6 +82,7 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        { this.state.loading && <Spinner color='blue' style={styles.spinner}/>}
         <FlatList 
           data={this.state.contacts}
           renderItem = { ({item}) => this.renderListItem(item) }
@@ -89,5 +96,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  spinner: {
+    justifyContent: 'center',
+    flexDirection: 'column',
+    alignSelf: 'center'
   }
 })
