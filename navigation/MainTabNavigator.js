@@ -50,6 +50,7 @@ ProfileStack.navigationOptions = {
 
 const BirthdayStack = createStackNavigator({
   Settings: BirthdayScreen,
+  Profile: ProfileScreen
 });
 
 BirthdayStack.navigationOptions = {

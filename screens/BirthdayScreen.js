@@ -15,38 +15,64 @@ export default class BirthdayScreen extends React.Component {
       contacts: []
     }
     db = firebase.database()
+    now = moment()
+    nextMonth = moment(now).add(1, 'M')
   }
 
   static navigationOptions = {
-    title: 'Birthdays',
+    title: 'Upcoming Birthdays',
   }
 
   componentWillMount() {
     const userId = firebase.auth().currentUser.uid;
-    contacts = db.ref(`users/${userId}/contacts`).orderByChild('birthday')
+    contacts = db.ref(`users/${userId}/contacts`)
     contacts.on('value', (snapshot) => {
-      this.updateContacts(snapshot.val());
-    });
+      let fullContacts = []
+      snapshot.forEach( (child) => {
+        fullContacts.push({
+          id: child.key,
+          details: child.val()
+        })
+      })
+      this.updateContacts(fullContacts)
+    })
   }
 
   componentDidUpdate() {
-    console.log(this.state.contacts)
-  }
-
-  getFormattedBirthday = (date) => {
-    return moment(date).format("MMMM Do YYYY")
+    //console.log(this.state)
   }
 
   renderListItem(contact) {
+    const { firstName, lastName, birthday } = contact.details
     return (
-      <ListItem itemDivider>
-        <Text>{`${contact.firstName} ${contact.lastName} - ${this.getFormattedBirthday(contact.birthday)}`}</Text>
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact)}>
+        <Text>{`${firstName} ${lastName} - ${this.getFormattedBirthday(birthday)}`}</Text>
       </ListItem>     
     )
   }
 
+  getFormattedBirthday = (date) => {
+    return moment(date).format("MMMM Do")
+  }
+
+  convertObjToArray = (obj) => {
+    return _.values(obj)
+  }
+
   updateContacts(contacts) {
-    this.setState({ contacts: _.values(contacts) })
+    const filteredContactsArray = contacts
+    .filter( (contact) => contact.details.birthday !== undefined )
+    .map(contact => { 
+      contact.details.birthday = moment(contact.details.birthday).year(now.year()).format()
+      return contact
+    })
+    
+    const isBetweenContacts = filteredContactsArray.filter( contact => 
+      moment(contact.details.birthday).isBetween(now, nextMonth)
+    )
+   const sortedContacts = _.orderBy(isBetweenContacts, ['birthday'], ['asc'])
+   console.log(sortedContacts)
+    this.setState({ contacts: sortedContacts })
   }
 
   render() {
