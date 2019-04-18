@@ -63,14 +63,14 @@ export default class BirthdayScreen extends React.Component {
     const filteredContactsArray = contacts
     .filter( (contact) => contact.details.birthday !== undefined )
     .map(contact => { 
-      contact.details.birthday = moment(contact.details.birthday).year(now.year()).format()
+      contact.details.tempBirthday = moment(contact.details.birthday).year(now.year()).format()
       return contact
     })
     
     const isBetweenContacts = filteredContactsArray.filter( contact => 
-      moment(contact.details.birthday).isBetween(now, nextMonth)
+      moment(contact.details.tempBirthday).isBetween(now, nextMonth)
     )
-   const sortedContacts = _.orderBy(isBetweenContacts, ['birthday'], ['asc'])
+   const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
    console.log(sortedContacts)
     this.setState({ contacts: sortedContacts })
   }
