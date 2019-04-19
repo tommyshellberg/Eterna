@@ -32,10 +32,15 @@ export default class HomeScreen extends React.Component {
     title: 'Contacts'
   }
 
-  componentWillMount() {
-    const userId = firebase.auth().currentUser.uid;
+ componentWillMount() {
+    this.getContacts()
+  }
+
+  async getContacts() {
+    console.log('calling getContacts')
+    const userId = await firebase.auth().currentUser.uid;
     contacts = db.ref(`users/${userId}/contacts`)
-    contacts.on('value', (snapshot) => {
+    contacts.once('value', (snapshot) => {
       let fullContacts = []
       snapshot.forEach( (child) => {
         fullContacts.push({
@@ -47,9 +52,6 @@ export default class HomeScreen extends React.Component {
     })
   }
 
-  // TODO: Make sure the list can be refreshed by swiping up
-  // TODO: grab the key in the db for each contact and send it as a prop to the Profile page.
-
   renderListItem = (contact) => {
     return (
       <ListItem onPress={() => this.props.navigation.navigate('Profile', contact)}>
@@ -57,6 +59,9 @@ export default class HomeScreen extends React.Component {
       </ListItem>
     )
   }
+
+  // TODO: move checkLoginStatus() higher up in the app to force them out of main screen back to auth.
+  // TODO: implement caching for data.
 
   checkLoginStatus() {
     firebase.auth().onAuthStateChanged(function(user) {
@@ -76,7 +81,8 @@ export default class HomeScreen extends React.Component {
      })
   }
 
-  componentDidUpdate() {
+  refreshData = () => {
+    this.getContacts()
   }
 
   render() {
@@ -84,6 +90,8 @@ export default class HomeScreen extends React.Component {
       <ScrollView style={styles.container}>
         { this.state.loading && <Spinner color='blue' style={styles.spinner}/>}
         <FlatList 
+          refreshing={this.state.loading}
+          onRefresh={this.refreshData}
           data={this.state.contacts}
           renderItem = { ({item}) => this.renderListItem(item) }
         />

@@ -45,20 +45,10 @@ class LoginForm extends React.Component {
                 this.setState({loading: false})
                 this.props.navigation.navigate('Main')
                 })
-            .then( () => {
-                // TODO: handle the current user auth.
-                //const { currentUser } = firebase.auth()
-                //console.log( 'Current user: ' + currentUser )
-                //firebase.database().ref('/users/')
-                //.push(currentUser)
-            })
             .catch( () => {
                 alert('failed to sign in!')
                 this.setState({loading: false})
             })
-            
-        // add Firebase login method here
-        // Don't forget to set this.state.loading to true while doing actions. Inside of the then() function calls set loading to false
     }
 
     render() {
@@ -100,8 +90,6 @@ class LoginForm extends React.Component {
     }
 }
 
-// TODO: add a splash screen background image.
-// TODO: center the container on the screen
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -38,7 +38,6 @@ export default class ProfileScreen extends React.Component {
     this.setState({[prop]: text}) 
   }
 
-  //TODO: pass the user key as prop from HomeScreen
   handleStateUpdate = debounce( () => {
     console.log('calling handleStateUpdate')
     db.ref(`users/${this.userId}/contacts/${this.props.navigation.getParam('id')}`)

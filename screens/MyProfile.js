@@ -28,20 +28,19 @@ export default class ProfileScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Profile',
+    title: 'My Profile',
   };
 
   async componentWillMount() {
     this.userId = await firebase.auth().currentUser.uid;
     let me = db.ref(`users/${this.userId}/me`)
     let obj = {}
-    me.on('value', (snapshot) => {
+    me.once('value', (snapshot) => {
       snapshot.forEach( (child) => {
         const key = child.key
         const val = child.val()
         obj[key] = val
       })
-      console.log(obj)
       this.setState(obj)
     })
   }
@@ -51,17 +50,13 @@ export default class ProfileScreen extends React.Component {
   }
 
   handleStateUpdate = debounce( () => {
-    console.log('calling handleStateUpdate')
     db.ref(`users/${this.userId}/me`)
     .set(this.state)
-    .then( () => alert('successfully updated'))
     .catch ( (error) => alert('failed to update record!'))
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('calling componentDidUpdate')
     if ( prevState !== this.state ) {
-      console.log('state is different, updating')
       this.handleStateUpdate()
     }
   }
