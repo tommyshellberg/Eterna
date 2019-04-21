@@ -20,7 +20,9 @@ export default class AddContactScreen extends React.Component {
       birthday:  new Date(),
       phone: '',
       email: '',
-      address: ''
+      address: '',
+      showImport: false,
+      importJSON: ''
     }
     this.userId = ''
     db = firebase.database();
@@ -41,8 +43,10 @@ export default class AddContactScreen extends React.Component {
   handleFormSubmit = async () => {
       // When the button is submitted, add a new record. 
       // Keep in mind the format we use, { id: id, details: this.state }
-
-    let contactObj = this.state
+    
+    const {birthday, address, phone, firstName, lastName, email} = this.state
+    let contactObj = { birthday, address, phone, firstName, lastName, email}
+    console.log(contactObj)
     const dbRef = await db.ref(`users/${this.userId}/contacts`)
     const contactRef = await dbRef.push()
     contactRef.set(contactObj)
@@ -58,9 +62,35 @@ export default class AddContactScreen extends React.Component {
     this.setState({ birthday: date.toString() })
   }
 
+  handleImport = () => {
+      if ( this.state.importJSON === '' && !this.state.showImport ) {
+        this.setState({ showImport: true })
+      } else if ( this.state.importJSON !== '' && this.state.showImport ) {
+          // replace the above if statement with a function call to validate the JSON. Use a library
+        this.importJSON()
+      }
+  }
+
+  importJSON = () => {
+      const parsedJSON = JSON.parse(this.state.importJSON)
+      parsedJSON.birthday = moment(parsedJSON).format()
+      this.setState(parsedJSON)
+  }
+
   render() {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
+        { this.state.showImport && <Textarea
+            value={this.state.importJSON}
+            style={{ width: '100%' }}
+            label="JSON Import" 
+            rowSpan={3} 
+            placeholder="Paste a JSON object here"
+            onChangeText={(text) => this.handleTextUpdate(text, 'importJSON')}
+        ></Textarea> }
+        <Button full info onPress={this.handleImport}>
+            <Text>{ this.state.showImport ? 'Import' : 'Import from JSON' }</Text>
+        </Button>
         <Form>
           <Card>
               <CardItem header>

@@ -22,7 +22,7 @@ export default class CustomDatePicker extends Component {
   render() {
     return (
           <DatePicker
-            defaultDate={ this.props.chosenDate || new Date("1980-01-01T22:00:00.000Z") }
+            defaultDate={ this.props.selectedDate || new Date("1980-01-01T22:00:00.000Z") }
             minimumDate={ new Date("1900-01-01T22:00:00.000Z") }
             maximumDate={ new Date() }
             locale={"en"}
