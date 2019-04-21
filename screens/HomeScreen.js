@@ -1,21 +1,17 @@
 import React from 'react';
 import {
-  Image,
-  Platform,
   ScrollView,
   StyleSheet,
   View,
+  FlatList
 } from 'react-native';
 
-import { Spinner } from 'native-base'
+import { Spinner, Button, Text, ListItem } from 'native-base'
 
 import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
-
-import { FlatList } from 'react-native'
-import { ListItem, Text } from 'native-base'
 
 export default class HomeScreen extends React.Component {
 
@@ -28,8 +24,17 @@ export default class HomeScreen extends React.Component {
     db = firebase.database();
   }
 
-  static navigationOptions = {
-    title: 'Contacts'
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: 'Contacts',
+      headerRight: (
+        <View>
+          <Button transparent success onPress={() => navigation.navigate('AddContact')}>
+            <Text style={{color: "#333"}}>Add</Text>
+          </Button>
+        </View>
+      )
+    }
   }
 
  componentWillMount() {

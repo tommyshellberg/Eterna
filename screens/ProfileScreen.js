@@ -40,7 +40,6 @@ export default class ProfileScreen extends React.Component {
   }
 
   handleStateUpdate = debounce( () => {
-    console.log('calling handleStateUpdate')
     db.ref(`users/${this.userId}/contacts/${this.props.navigation.getParam('id')}`)
     .set(this.state)
     .then( () => alert('successfully updated'))
@@ -48,9 +47,7 @@ export default class ProfileScreen extends React.Component {
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('calling componentDidUpdate')
     if ( prevState !== this.state ) {
-      console.log('state is different, updating')
       this.handleStateUpdate()
     }
   }

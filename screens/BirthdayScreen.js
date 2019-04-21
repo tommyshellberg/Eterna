@@ -38,10 +38,6 @@ export default class BirthdayScreen extends React.Component {
     })
   }
 
-  componentDidUpdate() {
-    //console.log(this.state)
-  }
-
   renderListItem(contact) {
     const { firstName, lastName, birthday } = contact.details
     return (
@@ -71,7 +67,6 @@ export default class BirthdayScreen extends React.Component {
       moment(contact.details.tempBirthday).isBetween(now, nextMonth)
     )
    const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
-   console.log(sortedContacts)
     this.setState({ contacts: sortedContacts })
   }
 

@@ -3,17 +3,18 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 
-import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import TabBarIcon from '../components/TabBarIcon'
+import HomeScreen from '../screens/HomeScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+import AddContactScreen from '../screens/AddContactScreen'
 import MyProfileScreen from '../screens/MyProfile'
-import BirthdayScreen from '../screens/BirthdayScreen';
-
+import BirthdayScreen from '../screens/BirthdayScreen'
 
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-    Profile: ProfileScreen 
+    Profile: ProfileScreen,
+    AddContact: AddContactScreen
   },
   {
     initialRouteName: "Home"
