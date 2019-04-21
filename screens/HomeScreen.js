@@ -37,7 +37,6 @@ export default class HomeScreen extends React.Component {
   }
 
   async getContacts() {
-    console.log('calling getContacts')
     const userId = await firebase.auth().currentUser.uid;
     contacts = db.ref(`users/${userId}/contacts`)
     contacts.once('value', (snapshot) => {
@@ -48,6 +47,8 @@ export default class HomeScreen extends React.Component {
           details: child.val()
         })
       })
+
+      fullContacts = _.sortBy( fullContacts, [ (o) => o.details.firstName ] )
       this.updateContacts(fullContacts)
     })
   }
