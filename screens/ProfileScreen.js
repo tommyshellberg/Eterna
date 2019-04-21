@@ -1,6 +1,7 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Button, AsyncStorage } from 'react-native';
-import { Form, Card, CardItem, Text, Body, Textarea } from 'native-base'
+import { StyleSheet, Share } from 'react-native';
+import { Form, Card, CardItem, Text, Body, Textarea, Button } from 'native-base'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
 import { debounce } from 'lodash'
 import {firebase} from '@firebase/app'
@@ -62,9 +63,37 @@ export default class ProfileScreen extends React.Component {
     this.setState({ birthday: date.toString() })
   }
 
+  onShare = async () => {
+    try {
+      const shareState = this.state
+      shareState.birthday = moment(this.state.birthday).format("MMMM Do YYYY")
+      const result = await Share.share({
+        // TODO: Prettyify or leave as JSON to allow importing?
+
+        message: JSON.stringify(this.state),
+        title: `Contact information for ${this.state.firstName} ${this.state.lastName}`
+      },
+      {
+        dialogTitle: `Contact information for ${this.state.firstName} ${this.state.lastName}`
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+}
+
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
       <Form>
         <Card>
             <CardItem header>
@@ -150,7 +179,10 @@ export default class ProfileScreen extends React.Component {
           </CardItem>
         </Card>
         </Form>
-      </ScrollView>
+        <Button full info onPress={this.onShare}>
+          <Text>Share This Contact</Text>
+        </Button>
+      </KeyboardAwareScrollView>
     );
   }
 }
