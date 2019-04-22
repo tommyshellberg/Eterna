@@ -13,28 +13,31 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
-let schema = yup.object().shape({
-    firstName: yup.string().required(),
-    lastName: yup.string().required(),
-    email: yup.string().email(),
-    phone: yup.string(),
-    birthday: yup.date(),
-    address: yup.string()
-  });
+const firstNameSchema = yup.string().required().min(2).max(15)
+const lastNameSchema = yup.string().required().min(2).max(15)
+const emailSchema = yup.string().trim().email()
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+const phoneSchema = yup.string().trim().matches(phoneRegExp)
+const addressSchema =  yup.string().min(10).max(100)
 
 export default class AddContactScreen extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      firstName: '',
-      lastName: '',
-      birthday:  new Date(),
-      phone: '',
-      email: '',
-      address: '',
-      showImport: false,
-      importJSON: ''
+        firstName: '',
+        lastName: '',
+        birthday:  new Date(),
+        phone: '',
+        email: '',
+        address: '',
+        showImport: false,
+        importJSON: '',
+        isValidfirstName: false,
+        isValidlastName: false,
+        isValidphone: false,
+        isValidemail: false,
+        isValidaddress: false,
     }
     this.userId = ''
     db = firebase.database();
@@ -45,8 +48,38 @@ export default class AddContactScreen extends React.Component {
   };
 
   handleTextUpdate = (text, prop) => {
-    this.setState({[prop]: text}) 
+    this.setState({[prop]: text})
+    this.validateField(prop, text) 
   }
+
+  validateField = debounce ((prop, text) => {
+    console.log( [prop] + text)
+      switch(prop) {
+        case 'firstName':
+            firstNameSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidfirstName: valid }))
+            break
+        case 'lastName':
+            lastNameSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidlastName: valid }))
+            break
+        case 'address':
+            addressSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidaddress: valid }))
+            break
+        case 'phone':
+            phoneSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidphone: valid }))
+            break
+        case 'email':
+            emailSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidemail: valid }))
+            break
+        default:
+            console.log('default being called')
+            break
+      }
+  }, 500)
 
   async componentWillMount() {
     this.userId = await firebase.auth().currentUser.uid
@@ -110,6 +143,7 @@ export default class AddContactScreen extends React.Component {
               <CardItem>
                 <Body>
                   <TextInput 
+                    error={!this.state.isValidfirstName}
                     prop="firstName"
                     label="First Name" 
                     placeholder={this.state.firstName}
@@ -121,6 +155,7 @@ export default class AddContactScreen extends React.Component {
               <CardItem>
                 <Body>
                   <TextInput 
+                    error={!this.state.isValidlastName}
                     prop="lastName"
                     label="Last Name" 
                     placeholder={this.state.lastName}
@@ -151,6 +186,7 @@ export default class AddContactScreen extends React.Component {
             <CardItem>
               <Body>
                 <TextInput 
+                  error={!this.state.isValidemail}
                   prop="email"
                   label="Email" 
                   placeholder={this.state.email}
@@ -161,7 +197,8 @@ export default class AddContactScreen extends React.Component {
             </CardItem>
             <CardItem>
               <Body>
-                <TextInput                 
+                <TextInput    
+                  error={!this.state.isValidphone}             
                   prop="phone"
                   label="Phone Number" 
                   placeholder={this.state.phone}
@@ -177,6 +214,7 @@ export default class AddContactScreen extends React.Component {
             <CardItem>
               <Body >
                 <Textarea bordered 
+                  error={!this.state.isValidaddress}
                   style={{ width: '100%' }}
                   label="Address" 
                   rowSpan={3} 
