@@ -46,7 +46,6 @@ export default class AddContactScreen extends React.Component {
 
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text}) 
-    this.validateInput(prop, text)
   }
 
   async componentWillMount() {
