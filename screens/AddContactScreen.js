@@ -2,13 +2,25 @@ import React from 'react';
 import { StyleSheet, Share } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea, Button } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+import * as yup from 'yup';
 import moment from 'moment'
+import {debounce} from 'lodash'
 import {firebase} from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
 
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
+
+let schema = yup.object().shape({
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    email: yup.string().email(),
+    phone: yup.string(),
+    birthday: yup.date(),
+    address: yup.string()
+  });
 
 export default class AddContactScreen extends React.Component {
 
@@ -34,6 +46,7 @@ export default class AddContactScreen extends React.Component {
 
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text}) 
+    this.validateInput(prop, text)
   }
 
   async componentWillMount() {
@@ -46,7 +59,6 @@ export default class AddContactScreen extends React.Component {
     
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
-    console.log(contactObj)
     const dbRef = await db.ref(`users/${this.userId}/contacts`)
     const contactRef = await dbRef.push()
     contactRef.set(contactObj)
