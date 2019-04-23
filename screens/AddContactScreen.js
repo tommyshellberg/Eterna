@@ -38,6 +38,7 @@ export default class AddContactScreen extends React.Component {
         isValidphone: false,
         isValidemail: false,
         isValidaddress: false,
+        disableSubmit: true
     }
     this.userId = ''
     db = firebase.database();
@@ -50,6 +51,15 @@ export default class AddContactScreen extends React.Component {
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text})
     this.validateField(prop, text) 
+  }
+
+  componentDidUpdate () {
+      // TODO: make more performant by comparing prevState and new state.
+      // TODO: put validation in here.
+      const {isValidfirstName, isValidlastName, isValidphone, isValidemail, isValidaddress, disableSubmit } = this.state
+      if ( disableSubmit && isValidfirstName && isValidlastName && isValidphone && isValidemail && isValidaddress) {
+          this.setState({disableSubmit: false})
+      }
   }
 
   validateField = debounce ((prop, text) => {
@@ -226,7 +236,7 @@ export default class AddContactScreen extends React.Component {
             </CardItem>
           </Card>
           </Form>
-          <Button full info onPress={this.handleFormSubmit}>
+          <Button full info onPress={this.handleFormSubmit} disabled={this.state.disableSubmit}>
             <Text>Create Contact</Text>
           </Button>
         </KeyboardAwareScrollView>

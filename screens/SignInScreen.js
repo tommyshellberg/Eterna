@@ -1,8 +1,16 @@
 import React from 'react'
-import { StyleSheet, ImageBackground, View } from 'react-native'
-import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
 import firebase from '@firebase/app'
 import '@firebase/auth'
+import * as yup from 'yup';
+import {debounce} from 'lodash'
+
+
+import { StyleSheet, ImageBackground, View } from 'react-native'
+import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
+
+const emailSchema = yup.string().trim().min(5).max(30).email()
+
+// TODO: fix loading spinner not working.
 
 class LoginForm extends React.Component {
 
@@ -11,7 +19,8 @@ class LoginForm extends React.Component {
         this.state = {
             email: 'thomas@shellberg.com',
             password: 'superbigones',
-            loading: false
+            loading: false,
+            isValidEmail: false
         }
     }
 
@@ -26,11 +35,28 @@ class LoginForm extends React.Component {
 
     onEmailChange = (email) => {
         this.setState({ email })
+        this.validateField( 'email', email )
     }
 
     onPasswordChange = (password) => {
         this.setState({password})
     }
+
+    componentDidUpdate () {
+        // TODO: make more performant, check prevState !== newstate
+        console.log(this.state)
+    }
+
+    validateField = debounce ((prop, text) => {
+        switch(prop) {
+        case 'email':
+            emailSchema.isValid(text)
+            .then( (valid) => this.setState({ isValidEmail: valid }))
+            break
+        default:
+            break
+        }
+    }, 500)
 
     onResetPress= () => {
         this.props.navigation.navigate('Reset')
@@ -57,7 +83,7 @@ class LoginForm extends React.Component {
                 <View style={styles.container}>
                     <Card>
                         <CardItem>
-                        <Item fixedLabel>
+                        <Item fixedLabel error={!this.state.isValidEmail} success={this.state.isValidEmail}>
                             <Label>Email</Label>
                             <Input
                                 placeholder="thomas@shellberg.com"
@@ -75,7 +101,7 @@ class LoginForm extends React.Component {
                                     placeholder="superbigones"
                                     value={this.state.password}
                                     onChangeText={password => this.onPasswordChange(password)}
-                                    secure={true}
+                                    secureTextEntry={true}
                                 />
                             </Item>
                         </CardItem>
