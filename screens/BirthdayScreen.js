@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, View } from 'react-native';
 import { ListItem, Text } from 'native-base'
 import moment from 'moment'
 import _ from 'lodash'
@@ -70,14 +70,17 @@ export default class BirthdayScreen extends React.Component {
     this.setState({ contacts: sortedContacts })
   }
 
+  _keyExtractor = (item, index) => item.id;
+
   render() {
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={this.state.contacts}
           renderItem = { ({item}) => this.renderListItem(item) }
+          keyExtractor={this._keyExtractor}
         />
-      </ScrollView>
+      </View>
     )
   }
 }

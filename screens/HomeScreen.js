@@ -91,17 +91,19 @@ export default class HomeScreen extends React.Component {
     this.getContacts()
   }
 
+  _keyExtractor = (item, index) => item.id;
+
   render() {
     return (
-      <ScrollView style={styles.container}>
-        { this.state.loading && <Spinner color='blue' style={styles.spinner}/>}
+      <View style={styles.container}>
         <FlatList 
           refreshing={this.state.loading}
           onRefresh={this.refreshData}
           data={this.state.contacts}
           renderItem = { ({item}) => this.renderListItem(item) }
+          keyExtractor={this._keyExtractor}
         />
-      </ScrollView>
+      </View>
     )
   }
 }
