@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ScrollView,
   StyleSheet,
   View,
   FlatList
@@ -19,7 +18,8 @@ export default class HomeScreen extends React.Component {
     super(props)
     this.state = {
       contacts: [],
-      loading: true
+      loading: true,
+      userId: ''
     }
     db = firebase.database();
   }
@@ -37,12 +37,13 @@ export default class HomeScreen extends React.Component {
     }
   }
 
- componentWillMount() {
-    this.getContacts()
+ async componentWillMount() {
+    const userId = await firebase.auth().currentUser.uid;
+    this.setState({ userId })
+    this.getContacts(userId)
   }
 
-  async getContacts() {
-    const userId = await firebase.auth().currentUser.uid;
+  async getContacts(userId) {
     contacts = db.ref(`users/${userId}/contacts`)
     contacts.once('value', (snapshot) => {
       let fullContacts = []
@@ -60,7 +61,7 @@ export default class HomeScreen extends React.Component {
 
   renderListItem = (contact) => {
     return (
-      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact)}>
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact, userId: this.state.userId } )} >
         <Text>{`${contact.details.firstName} ${contact.details.lastName}`}</Text>
       </ListItem>
     )

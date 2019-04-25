@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Share } from 'react-native';
+import { StyleSheet, Share, View } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea, Button } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
@@ -16,23 +16,37 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      firstName: this.props.navigation.state.params.details.firstName,
-      lastName: this.props.navigation.state.params.details.lastName,
-      birthday: this.props.navigation.state.params.details.birthday || new Date(),
-      phone: this.props.navigation.state.params.details.phone,
-      email: this.props.navigation.state.params.details.email,
-      address: this.props.navigation.state.params.details.address
+    
+      firstName: this.props.navigation.state.params.contact.details.firstName,
+      lastName: this.props.navigation.state.params.contact.details.lastName,
+      birthday: this.props.navigation.state.params.contact.details.birthday || new Date(),
+      phone: this.props.navigation.state.params.contact.details.phone,
+      email: this.props.navigation.state.params.contact.details.email,
+      address: this.props.navigation.state.params.contact.details.address
+      
     }
-    this.userId = ''
+    userId = this.props.navigation.state.params.userId
     db = firebase.database();
   }
 
-  static navigationOptions = {
-    title: 'Profile',
-  };
+  static navigationOptions = ({navigation}) => {
+    return {
+      title: 'Profile',
+      headerRight: (
+        <View>
+          <Button transparent danger onPress={ () => {
+            db.ref(`users/${userId}/contacts/${navigation.getParam('id')}`).remove()
+            navigation.navigate('Home')
+            } }>
+            <Text style={{color: "red"}}>Delete</Text>
+          </Button>
+        </View>
+      )
+    }
+  }
 
-  async componentDidMount() {
-    this.userId = await firebase.auth().currentUser.uid;
+  componentDidMount() {
+    console.log(this.props.navigation.state.params)
   }
 
   handleTextUpdate = (text, prop) => {
@@ -40,7 +54,7 @@ export default class ProfileScreen extends React.Component {
   }
 
   handleStateUpdate = debounce( () => {
-    db.ref(`users/${this.userId}/contacts/${this.props.navigation.getParam('id')}`)
+    db.ref(`users/${userId}/contacts/${this.props.navigation.getParam('id')}`)
     .set(this.state)
     .then( () => alert('successfully updated'))
     .catch ( (error) => alert('failed to update record!'))
