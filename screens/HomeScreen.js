@@ -10,7 +10,7 @@ import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
 
-import { Spinner, Button, Text, ListItem } from 'native-base'
+import { Button, Text, ListItem } from 'native-base'
 
 export default class HomeScreen extends React.Component {
 
