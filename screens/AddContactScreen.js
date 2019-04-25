@@ -17,7 +17,7 @@ const firstNameSchema = yup.string().required().min(2).max(15)
 const lastNameSchema = yup.string().required().min(2).max(15)
 const emailSchema = yup.string().trim().email()
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
-const phoneSchema = yup.string().trim().matches(phoneRegExp)
+const phoneSchema = yup.string().min(10).max(17).trim().matches(phoneRegExp)
 const addressSchema =  yup.string().min(10).max(100)
 
 export default class AddContactScreen extends React.Component {
@@ -63,7 +63,6 @@ export default class AddContactScreen extends React.Component {
   }
 
   validateField = debounce ((prop, text) => {
-    console.log( [prop] + text)
       switch(prop) {
         case 'firstName':
             firstNameSchema.isValid(text)
@@ -86,7 +85,6 @@ export default class AddContactScreen extends React.Component {
             .then( (valid) => this.setState({ isValidemail: valid }))
             break
         default:
-            console.log('default being called')
             break
       }
   }, 500)
@@ -202,6 +200,10 @@ export default class AddContactScreen extends React.Component {
                   placeholder={this.state.email}
                   value={this.state.email}
                   handleTextUpdate={this.handleTextUpdate}
+                  autoCorrect={false}
+                  keyboardType="email-address"
+                  autoCapitalize='none'
+                  textContentType="emailAddress"
                 />
               </Body>
             </CardItem>
@@ -213,7 +215,12 @@ export default class AddContactScreen extends React.Component {
                   label="Phone Number" 
                   placeholder={this.state.phone}
                   value={this.state.phone}
-                  handleTextUpdate={this.handleTextUpdate}/>
+                  handleTextUpdate={this.handleTextUpdate}
+                  autoCorrect={false}
+                  autoCapitalize='none'
+                  keyboardType="phone-pad"
+                  textContentType="telephoneNumber"
+                  />
               </Body>
             </CardItem>
           </Card>

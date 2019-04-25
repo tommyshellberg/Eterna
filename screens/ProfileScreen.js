@@ -163,7 +163,7 @@ export default class ProfileScreen extends React.Component {
                 handleTextUpdate={this.handleTextUpdate}
                 autoCorrect={false}
                 keyboardType="email-address"
-                autoCapitalize={false}
+                autoCapitalize='none'
                 textContentType="emailAddress"
               />
             </Body>
@@ -177,7 +177,7 @@ export default class ProfileScreen extends React.Component {
                 value={this.state.phone}
                 handleTextUpdate={this.handleTextUpdate}
                 autoCorrect={false}
-                autoCapitalize={false}
+                autoCapitalize='none'
                 keyboardType="phone-pad"
                 textContentType="telephoneNumber"
                 />

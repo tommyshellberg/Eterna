@@ -76,7 +76,7 @@ class LoginForm extends React.Component {
                 <View style={styles.container}>
                     <Card>
                         <CardItem>
-                        <Item fixedLabel error={!this.state.isValidEmail} success={this.state.isValidEmail}>
+                        <Item fixedLabel error={ this.state.email.length >0 && !this.state.isValidEmail } success={ this.state.email.length >0 && this.state.isValidEmail} >
                             <Label>Email</Label>
                             <Input
                                 placeholder="thomas@shellberg.com"

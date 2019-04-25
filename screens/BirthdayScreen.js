@@ -12,7 +12,8 @@ export default class BirthdayScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      contacts: []
+      contacts: [],
+      userId: ''
     }
     db = firebase.database()
     now = moment()
@@ -23,8 +24,9 @@ export default class BirthdayScreen extends React.Component {
     title: 'Upcoming Birthdays',
   }
 
-  componentWillMount() {
-    const userId = firebase.auth().currentUser.uid;
+  async componentWillMount() {
+    const userId = await firebase.auth().currentUser.uid;
+    this.setState({userId})
     contacts = db.ref(`users/${userId}/contacts`)
     contacts.on('value', (snapshot) => {
       let fullContacts = []
@@ -41,7 +43,7 @@ export default class BirthdayScreen extends React.Component {
   renderListItem(contact) {
     const { firstName, lastName, birthday } = contact.details
     return (
-      <ListItem onPress={() => this.props.navigation.navigate('Profile', contact)}>
+      <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact, userId: this.state.userId } )}>
         <Text>{`${firstName} ${lastName} - ${this.getFormattedBirthday(birthday)}`}</Text>
       </ListItem>     
     )

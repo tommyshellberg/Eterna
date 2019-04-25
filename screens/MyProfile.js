@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Share } from 'react-native';
-import { Form, Card, CardItem, Text, Body, Textarea, Button } from 'native-base'
+import { Form, Card, CardItem, Text, Body, Textarea, Button, Spinner } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
 import { debounce } from 'lodash'
@@ -21,7 +21,8 @@ export default class ProfileScreen extends React.Component {
       birthday:  new Date(),
       phone: '',
       email: '',
-      address: ''
+      address: '',
+      loading: false
     }
     this.userId = ''
     db = firebase.database();
@@ -29,13 +30,14 @@ export default class ProfileScreen extends React.Component {
 
   static navigationOptions = {
     title: 'My Profile',
-  };
+  }
 
   async componentWillMount() {
+    this.setState({loading: true})
     this.userId = await firebase.auth().currentUser.uid;
     let me = db.ref(`users/${this.userId}/me`)
     let obj = {}
-    me.once('value', (snapshot) => {
+    me.on('value', (snapshot) => {
       snapshot.forEach( (child) => {
         const key = child.key
         const val = child.val()
@@ -43,6 +45,8 @@ export default class ProfileScreen extends React.Component {
       })
       this.setState(obj)
     })
+    console.log('getting to setting loading to false')
+    this.setState({loading: false})
   }
 
   handleTextUpdate = (text, prop) => {
@@ -56,6 +60,7 @@ export default class ProfileScreen extends React.Component {
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
+    console.log(this.state)
     if ( prevState !== this.state ) {
       this.handleStateUpdate()
     }
@@ -100,6 +105,7 @@ export default class ProfileScreen extends React.Component {
   render() {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
+        { this.state.loading && <Spinner/>}
         <Form>
           <Card>
               <CardItem header>
@@ -156,7 +162,7 @@ export default class ProfileScreen extends React.Component {
                   handleTextUpdate={this.handleTextUpdate}
                   autoCorrect={false}
                   keyboardType="email-address"
-                  autoCapitalize={false}
+                  autoCapitalize='none'
                   textContentType="emailAddress"
                 />
               </Body>
@@ -170,7 +176,7 @@ export default class ProfileScreen extends React.Component {
                   value={this.state.phone}
                   handleTextUpdate={this.handleTextUpdate}
                   autoCorrect={false}
-                  autoCapitalize={false}
+                  autoCapitalize='none'
                   keyboardType="phone-pad"
                   textContentType="telephoneNumber"
                   />
