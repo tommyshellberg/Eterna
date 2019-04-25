@@ -9,6 +9,10 @@ export default class FloatingLabelExample extends Component {
                 placeholder={this.props.placeholder}
                 onChangeText={ (text) => this.props.handleTextUpdate(text, this.props.prop) }
                 value={this.props.value}
+                autoCapitalize={this.props.autoCapitalize}
+                autoCorrect={this.props.autoCorrect}
+                keyboardType={this.props.keyboardType}
+                textContentType={this.props.textContentType}
               />
               { this.props.error ? <Icon name='close-circle' /> : <Icon name='checkmark-circle' /> }
             </Item>

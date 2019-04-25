@@ -159,6 +159,10 @@ export default class ProfileScreen extends React.Component {
                 placeholder={this.state.email}
                 value={this.state.email}
                 handleTextUpdate={this.handleTextUpdate}
+                autoCorrect={false}
+                keyboardType="email-address"
+                autoCapitalize={false}
+                textContentType="emailAddress"
               />
             </Body>
           </CardItem>
@@ -169,7 +173,12 @@ export default class ProfileScreen extends React.Component {
                 label="Phone Number" 
                 placeholder={this.state.phone}
                 value={this.state.phone}
-                handleTextUpdate={this.handleTextUpdate}/>
+                handleTextUpdate={this.handleTextUpdate}
+                autoCorrect={false}
+                autoCapitalize={false}
+                keyboardType="phone-pad"
+                textContentType="telephoneNumber"
+                />
             </Body>
           </CardItem>
         </Card>
