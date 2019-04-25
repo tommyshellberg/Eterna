@@ -10,8 +10,6 @@ import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } 
 
 const emailSchema = yup.string().trim().min(5).max(30).email()
 
-// TODO: fix loading spinner not working.
-
 class LoginForm extends React.Component {
 
     constructor(props) {
@@ -40,11 +38,6 @@ class LoginForm extends React.Component {
 
     onPasswordChange = (password) => {
         this.setState({password})
-    }
-
-    componentDidUpdate () {
-        // TODO: make more performant, check prevState !== newstate
-        console.log(this.state)
     }
 
     validateField = debounce ((prop, text) => {
@@ -90,6 +83,12 @@ class LoginForm extends React.Component {
                                 value={this.state.email}
                                 onChangeText={email => this.onEmailChange(email)}
                                 secure={false}
+                                autoCapitalize='none'
+                                autoCorrect={false}
+                                autoFocus={true}
+                                keyboardType="email-address"
+                                maxLength={30}
+                                textContentType="emailAddress"
                             />
                         </Item>
                         </CardItem>
@@ -102,6 +101,9 @@ class LoginForm extends React.Component {
                                     value={this.state.password}
                                     onChangeText={password => this.onPasswordChange(password)}
                                     secureTextEntry={true}
+                                    autoCapitalize='none'
+                                    autoCorrect={false}
+                                    textContentType="password"
                                 />
                             </Item>
                         </CardItem>
