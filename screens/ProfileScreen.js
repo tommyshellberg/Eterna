@@ -35,7 +35,10 @@ export default class ProfileScreen extends React.Component {
       headerRight: (
         <View>
           <Button transparent danger onPress={ () => {
-            db.ref(`users/${userId}/contacts/${navigation.getParam('id')}`).remove()
+            db.ref(`users/${userId}/contacts/${navigation.state.params.contact.id}`)
+            .remove()
+            .then( () => alert('deleted!') )
+            .catch( () => alert('failed to delete!') )
             navigation.navigate('Home')
             } }>
             <Text style={{color: "red"}}>Delete</Text>
@@ -46,7 +49,6 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.navigation.state.params)
   }
 
   handleTextUpdate = (text, prop) => {

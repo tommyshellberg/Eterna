@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component {
 
   async getContacts(userId) {
     contacts = db.ref(`users/${userId}/contacts`)
-    contacts.once('value', (snapshot) => {
+    contacts.on('value', (snapshot) => {
       let fullContacts = []
       snapshot.forEach( (child) => {
         fullContacts.push({
