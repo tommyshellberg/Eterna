@@ -8,15 +8,15 @@ import {debounce} from 'lodash'
 import { StyleSheet, ImageBackground, View } from 'react-native'
 import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
 
-const emailSchema = yup.string().trim().min(5).max(30).email()
+const emailSchema = yup.string().trim().min(5).max(50).email()
 
 class LoginForm extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            email: 'thomas@shellberg.com',
-            password: 'superbigones',
+            email: '',
+            password: '',
             loading: false,
             isValidEmail: false
         }
@@ -79,7 +79,7 @@ class LoginForm extends React.Component {
                         <Item fixedLabel error={ this.state.email.length >0 && !this.state.isValidEmail } success={ this.state.email.length >0 && this.state.isValidEmail} >
                             <Label>Email</Label>
                             <Input
-                                placeholder="thomas@shellberg.com"
+                                placeholder=""
                                 value={this.state.email}
                                 onChangeText={email => this.onEmailChange(email)}
                                 secure={false}
@@ -87,7 +87,7 @@ class LoginForm extends React.Component {
                                 autoCorrect={false}
                                 autoFocus={true}
                                 keyboardType="email-address"
-                                maxLength={30}
+                                maxLength={50}
                                 textContentType="emailAddress"
                             />
                         </Item>
@@ -97,7 +97,7 @@ class LoginForm extends React.Component {
                             <Item fixedLabel>
                                 <Label>Password</Label>
                                 <Input
-                                    placeholder="superbigones"
+                                    placeholder=""
                                     value={this.state.password}
                                     onChangeText={password => this.onPasswordChange(password)}
                                     secureTextEntry={true}
