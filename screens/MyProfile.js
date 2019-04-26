@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Share } from 'react-native';
+import { StyleSheet, Share, View } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea, Button, Spinner } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
@@ -28,9 +28,26 @@ export default class ProfileScreen extends React.Component {
     db = firebase.database();
   }
 
-  static navigationOptions = {
-    title: 'My Profile',
-  }
+  static navigationOptions = ({navigation}) => {
+    
+    return {
+      title: 'My Profile',
+      headerRight: (
+        <View>
+          <Button transparent success onPress={() => {
+            firebase.auth().signOut()
+              .then ( () => {
+                alert('Signed out!')
+              })
+              .catch( (error) => alert(error))
+            }}
+            >
+            <Text style={{color: "#333"}}>Logout</Text>
+          </Button>
+        </View>
+      )
+    }
+}
 
   async componentWillMount() {
     this.setState({loading: true})

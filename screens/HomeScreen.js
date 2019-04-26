@@ -10,7 +10,7 @@ import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
 
-import { Button, Text, ListItem } from 'native-base'
+import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 
 export default class HomeScreen extends React.Component {
 
@@ -92,19 +92,34 @@ export default class HomeScreen extends React.Component {
     this.getContacts()
   }
 
+  createContactPrompt = () => {
+    return (
+      <Card>
+        <CardItem>
+          <Text>No contacts found! Why not create one?</Text>
+        </CardItem>
+      </Card>
+    )
+  }
+
+
   _keyExtractor = (item, index) => item.id;
 
   render() {
     return (
-      <View style={styles.container}>
-        <FlatList 
-          refreshing={this.state.loading}
-          onRefresh={this.refreshData}
-          data={this.state.contacts}
-          renderItem = { ({item}) => this.renderListItem(item) }
-          keyExtractor={this._keyExtractor}
-        />
-      </View>
+        <View style={styles.container}>
+          { this.state.loading && <Spinner/> }
+          { !this.state.loading && this.state.contacts.length > 0 && 
+            <FlatList 
+              refreshing={this.state.loading}
+              onRefresh={this.refreshData}
+              data={this.state.contacts}
+              renderItem = { ({item}) => this.renderListItem(item) }
+              keyExtractor={this._keyExtractor}
+            />
+          }
+          { !this.state.loading && this.state.contacts.length === 0 && this.createContactPrompt() }
+        </View>
     )
   }
 }

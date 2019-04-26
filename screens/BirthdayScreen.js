@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
-import { ListItem, Text } from 'native-base'
+import { ListItem, Text, Card, CardItem } from 'native-base'
 import moment from 'moment'
 import _ from 'lodash'
 import firebase from '@firebase/app'
@@ -72,16 +72,28 @@ export default class BirthdayScreen extends React.Component {
     this.setState({ contacts: sortedContacts })
   }
 
+  noBirthdaysPrompt = () => {
+    return (
+      <Card>
+        <CardItem>
+          <Text>No birthdays coming up in the next month.</Text>
+        </CardItem>
+      </Card>
+    )
+  }
+
   _keyExtractor = (item, index) => item.id;
 
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
+        { this.state.contacts.length > 0 && <FlatList
           data={this.state.contacts}
           renderItem = { ({item}) => this.renderListItem(item) }
           keyExtractor={this._keyExtractor}
-        />
+          /> 
+        }
+        { this.state.contacts.length === 0 && this.noBirthdaysPrompt() }
       </View>
     )
   }
