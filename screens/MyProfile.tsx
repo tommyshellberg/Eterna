@@ -11,21 +11,36 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
-export default class ProfileScreen extends React.Component {
+interface Props {}
+
+interface State {
+  firstName: string,
+  lastName: string,
+  birthday: any,
+  phone: string,
+  email: string,
+  address: string,
+  loading: boolean
+}
+
+let db:any = null
+
+export default class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-    this.state = {
-      firstName: '',
-      lastName: '',
-      birthday:  new Date(),
-      phone: '',
-      email: '',
-      address: '',
-      loading: false
-    }
     this.userId = ''
     db = firebase.database();
+  }
+
+  state: State = {
+    firstName: '',
+    lastName: '',
+    birthday:  new Date(),
+    phone: '',
+    email: '',
+    address: '',
+    loading: false
   }
 
   static navigationOptions = ({navigation}) => {

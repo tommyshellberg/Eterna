@@ -12,16 +12,27 @@ import '@firebase/database'
 
 import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 
-export default class HomeScreen extends React.Component {
+interface Props {
+  navigation: any
+}
+interface State {
+  contacts: Array<object>,
+  loading: boolean,
+  userId: string
+}
+
+export default class HomeScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-    this.state = {
-      contacts: [],
-      loading: true,
-      userId: ''
-    }
+
     db = firebase.database();
+  }
+
+  state: State = {
+    contacts: [],
+    loading: true,
+    userId: ''
   }
 
   static navigationOptions = ({navigation}) => {
@@ -44,7 +55,7 @@ export default class HomeScreen extends React.Component {
   }
 
   async getContacts(userId) {
-    contacts = db.ref(`users/${userId}/contacts`)
+    const contacts = db.ref(`users/${userId}/contacts`)
     contacts.on('value', (snapshot) => {
       let fullContacts = []
       snapshot.forEach( (child) => {
@@ -89,7 +100,7 @@ export default class HomeScreen extends React.Component {
   }
 
   refreshData = () => {
-    this.getContacts()
+    this.getContacts(this.state.userId)
   }
 
   createContactPrompt = () => {

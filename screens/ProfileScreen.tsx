@@ -11,22 +11,36 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
-export default class ProfileScreen extends React.Component {
+interface Props {
+  // is navigation an object?
+  navigation: any
+}
+interface State {
+  firstName: string,
+  lastName: string,
+  birthday: Date,
+  phone: string
+  email: string
+  address: string
+}
+
+export default class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-    this.state = {
-    
-      firstName: this.props.navigation.state.params.contact.details.firstName,
-      lastName: this.props.navigation.state.params.contact.details.lastName,
-      birthday: this.props.navigation.state.params.contact.details.birthday || new Date(),
-      phone: this.props.navigation.state.params.contact.details.phone,
-      email: this.props.navigation.state.params.contact.details.email,
-      address: this.props.navigation.state.params.contact.details.address
-      
-    }
     userId = this.props.navigation.state.params.userId
     db = firebase.database();
+  }
+
+  state: State = {
+    
+    firstName: this.props.navigation.state.params.contact.details.firstName,
+    lastName: this.props.navigation.state.params.contact.details.lastName,
+    birthday: this.props.navigation.state.params.contact.details.birthday || new Date(),
+    phone: this.props.navigation.state.params.contact.details.phone,
+    email: this.props.navigation.state.params.contact.details.email,
+    address: this.props.navigation.state.params.contact.details.address
+    
   }
 
   static navigationOptions = ({navigation}) => {
@@ -49,6 +63,7 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log(typeof this.props.navigation.state.params.contact.details.birthday)
   }
 
   handleTextUpdate = (text, prop) => {
