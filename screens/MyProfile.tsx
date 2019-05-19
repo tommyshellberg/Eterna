@@ -77,7 +77,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
       })
       this.setState(obj)
     })
-    console.log('getting to setting loading to false')
     this.setState({loading: false})
   }
 
@@ -92,7 +91,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(this.state)
     if ( prevState !== this.state ) {
       this.handleStateUpdate()
     }
@@ -112,6 +110,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
       shareState.birthday = moment(this.state.birthday).format("MMMM Do YYYY")
       const result = await Share.share({
         // TODO: Prettyify or leave as JSON to allow importing?
+        //
 
         message: JSON.stringify(this.state),
         title: `Contact information for ${this.state.firstName} ${this.state.lastName}`

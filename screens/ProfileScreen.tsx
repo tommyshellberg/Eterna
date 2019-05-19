@@ -94,6 +94,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
   onShare = async () => {
     try {
       const shareState = this.state
+      // TODO: birthday is of type Date but moment.format() returns string. what to do here?
       shareState.birthday = moment(this.state.birthday).format("MMMM Do YYYY")
       const result = await Share.share({
         // TODO: Prettyify or leave as JSON to allow importing?

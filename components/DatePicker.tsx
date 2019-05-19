@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'native-base';
-import moment from 'moment'
 
-export default class CustomDatePicker extends Component {
+interface Props {
+  selectedDate: Date,
+  handleDateChange: Function
+  formattedDate: string
+}
+
+interface State {
+  chosenDate: Date,
+}
+
+export default class CustomDatePicker extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = { chosenDate: this.props.selectedDate || new Date() };
     this.setDate = this.setDate.bind(this);
   }
-  setDate(newDate) {
+  setDate( newDate: Date ) {
     this.setState({ chosenDate: newDate });
   }
 
