@@ -26,6 +26,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
     "react-navigation": "^3.0.9",
+    "sanitize-html": "^1.20.1",
     "yup": "^0.27.0"
   },
   "devDependencies": {
