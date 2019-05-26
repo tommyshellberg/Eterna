@@ -86,7 +86,14 @@ export default class ProfileScreen extends React.Component<Props, State> {
 
   handleStateUpdate = debounce( () => {
     db.ref(`users/${this.userId}/me`)
-    .set(this.state)
+    .set({
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      birthday:  this.state.birthday,
+      phone: this.state.phone,
+      email: this.state.email,
+      address: this.state.address
+    })
     .catch ( (error) => alert('failed to update record!'))
   }, 1000)
 
@@ -136,7 +143,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
   render() {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
-        { this.state.loading && <Spinner/>}
+        { 
+          // this.state.loading && <Spinner/>
+        }
         <Form>
           <Card>
               <CardItem header>
