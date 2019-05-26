@@ -144,7 +144,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
         { 
-          // this.state.loading && <Spinner/>
+          this.state.loading && <Spinner/>
         }
         <Form>
           <Card>
@@ -241,8 +241,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
             </CardItem>
           </Card>
           </Form>
-          <Button full info onPress={this.onShare}>
-            <Text>Share My Info</Text>
+          <Button info full onPress={this.onShare}>
+            <Text style={{ color: '#333' }} >Share My Info</Text>
           </Button>
         </KeyboardAwareScrollView>
     );

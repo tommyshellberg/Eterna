@@ -218,7 +218,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
         </Card>
         </Form>
         <Button full info onPress={this.onShare}>
-          <Text>Share This Contact</Text>
+          <Text style={{ color: '#333' }}>Share This Contact</Text>
         </Button>
       </KeyboardAwareScrollView>
     );
