@@ -6,6 +6,7 @@ import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
+import sortContacts from '../components/functions/birthdaySort.js'
 
 export default class BirthdayScreen extends React.Component {
 
@@ -16,8 +17,6 @@ export default class BirthdayScreen extends React.Component {
       userId: ''
     }
     db = firebase.database()
-    now = moment()
-    nextMonth = moment(now).add(1, 'M')
   }
 
   static navigationOptions = {
@@ -36,7 +35,8 @@ export default class BirthdayScreen extends React.Component {
           details: child.val()
         })
       })
-      this.updateContacts(fullContacts)
+      const sortedContacts = sortContacts(fullContacts)
+      this.updateContacts(sortedContacts)
     })
   }
 
@@ -58,18 +58,7 @@ export default class BirthdayScreen extends React.Component {
   }
 
   updateContacts(contacts) {
-    const filteredContactsArray = contacts
-    .filter( (contact) => contact.details.birthday !== undefined )
-    .map(contact => { 
-      contact.details.tempBirthday = moment(contact.details.birthday).year(now.year()).format()
-      return contact
-    })
-    
-    const isBetweenContacts = filteredContactsArray.filter( contact => 
-      moment(contact.details.tempBirthday).isBetween(now, nextMonth)
-    )
-   const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
-    this.setState({ contacts: sortedContacts })
+    this.setState({ contacts })
   }
 
   noBirthdaysPrompt = () => {
