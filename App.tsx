@@ -5,10 +5,16 @@ import firebase from '@firebase/app'
 
 import AppNavigator from './navigation/AppNavigator';
 
-export default class App extends React.Component {
+interface State {
+  isLoadingComplete: boolean
+}
+
+interface Props {}
+
+export default class App extends React.Component<Props, State> {
   state = {
     isLoadingComplete: false,
-  };
+  }
 
   async componentWillMount() {
     const config = {

@@ -20,7 +20,28 @@ const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2
 const phoneSchema = yup.string().min(10).max(17).trim().matches(phoneRegExp)
 const addressSchema =  yup.string().min(10).max(100)
 
-export default class AddContactScreen extends React.Component {
+interface Props {
+  navigation: any
+}
+
+interface State {
+  firstName: string
+  lastName: string
+  birthday:  any,
+  phone: string,
+  email: string,
+  address: string,
+  showImport: boolean
+  importJSON: string,
+  isValidfirstName: boolean,
+  isValidlastName: boolean,
+  isValidphone: boolean,
+  isValidemail: boolean,
+  isValidaddress: boolean,
+  disableSubmit: boolean
+}
+
+export default class AddContactScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -41,7 +62,7 @@ export default class AddContactScreen extends React.Component {
         disableSubmit: true
     }
     this.userId = ''
-    db = firebase.database();
+    var db = firebase.database();
   }
 
   static navigationOptions = {
@@ -111,7 +132,7 @@ export default class AddContactScreen extends React.Component {
   }
 
   handleBirthdayUpdate = ( date ) => {
-    this.setState({ birthday: date.toString() })
+    this.setState({ birthday: moment(date).format() })
   }
 
   handleImport = () => {
@@ -130,6 +151,7 @@ export default class AddContactScreen extends React.Component {
   }
 
   render() {
+    console.time('rendering the add contact screen')
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
         { this.state.showImport && <Textarea
@@ -181,7 +203,7 @@ export default class AddContactScreen extends React.Component {
               <Body>
                 <CustomDatePicker
                   handleDateChange={this.handleBirthdayUpdate}
-                  selectedDate={this.state.birthday}
+                  selectedDate={ moment(this.state.birthday, "MMMM Do YYYY").toDate() }
                   formattedDate={this.getFormattedBirthday(this.state.birthday)}
                 />
               </Body>
@@ -250,11 +272,3 @@ export default class AddContactScreen extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 15,
-    backgroundColor: '#fff',
-  },
-});

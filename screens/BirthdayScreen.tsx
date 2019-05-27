@@ -8,7 +8,15 @@ import '@firebase/auth'
 import '@firebase/database'
 import sortContacts from '../components/functions/birthdaySort.js'
 
-export default class BirthdayScreen extends React.Component {
+interface Props {
+  navigation: any
+}
+interface State {
+  contacts: Array<object>,
+  userId: string
+}
+
+export default class BirthdayScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -26,7 +34,7 @@ export default class BirthdayScreen extends React.Component {
   async componentWillMount() {
     const userId = await firebase.auth().currentUser.uid;
     this.setState({userId})
-    contacts = db.ref(`users/${userId}/contacts`)
+    let contacts = db.ref(`users/${userId}/contacts`)
     contacts.on('value', (snapshot) => {
       let fullContacts = []
       snapshot.forEach( (child) => {

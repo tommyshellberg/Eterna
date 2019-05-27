@@ -18,7 +18,7 @@ interface Props {
 interface State {
   firstName: string,
   lastName: string,
-  birthday: Date,
+  birthday: any,
   phone: string
   email: string
   address: string
@@ -63,7 +63,6 @@ export default class ProfileScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log(typeof this.props.navigation.state.params.contact.details.birthday)
   }
 
   handleTextUpdate = (text, prop) => {
@@ -71,6 +70,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
   }
 
   handleStateUpdate = debounce( () => {
+    console.log(this.state)
     db.ref(`users/${userId}/contacts/${this.props.navigation.getParam('id')}`)
     .set(this.state)
     .then( () => alert('successfully updated'))
@@ -83,12 +83,12 @@ export default class ProfileScreen extends React.Component<Props, State> {
     }
   }
 
-  getFormattedBirthday = (date) => {
+  getFormattedBirthday = ( date ) => {
     return moment(date).format("MMMM Do YYYY")
   }
 
-  handleBirthdayUpdate = ( date ) => {
-    this.setState({ birthday: date.toString() })
+  handleBirthdayUpdate = ( date:Date ) => {
+    this.setState({ birthday: moment(date).format() })
   }
 
   onShare = async () => {
@@ -159,7 +159,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             <Body>
               <CustomDatePicker
                 handleDateChange={this.handleBirthdayUpdate}
-                selectedDate={this.state.birthday}
+                selectedDate={ moment(this.state.birthday, "MMMM Do YYYY").toDate() }
                 formattedDate={this.getFormattedBirthday(this.state.birthday)}
               />
             </Body>

@@ -3,9 +3,15 @@ import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 
-export default class Loading extends React.Component {
+interface Props {
+    navigation: any
+}
 
-    componentDidMount() {
+interface State {}
+
+export default class Loading extends React.Component<Props, State> {
+
+    componentDidMount(): void {
         firebase.auth().onAuthStateChanged(user => {
             this.props.navigation.navigate(user ? 'Main' : 'Login')
         })
