@@ -6,6 +6,9 @@ import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
+import { Cache } from "react-native-cache";
+import { AsyncStorage } from 'react-native';
+
 import sortContacts from '../components/functions/birthdaySort.js'
 
 interface Props {
@@ -15,6 +18,9 @@ interface State {
   contacts: Array<object>,
   userId: string
 }
+
+let db = null
+let shellCache = null
 
 export default class BirthdayScreen extends React.Component<Props, State> {
 
@@ -31,21 +37,59 @@ export default class BirthdayScreen extends React.Component<Props, State> {
     title: 'Upcoming Birthdays',
   }
 
-  async componentWillMount() {
-    const userId = await firebase.auth().currentUser.uid;
+ componentDidMount () {
+
+    const userId = firebase.auth().currentUser.uid;
     this.setState({userId})
-    let contacts = db.ref(`users/${userId}/contacts`)
-    contacts.on('value', (snapshot) => {
-      let fullContacts = []
-      snapshot.forEach( (child) => {
-        fullContacts.push({
-          id: child.key,
-          details: child.val()
-        })
-      })
-      const sortedContacts = sortContacts(fullContacts)
-      this.updateContacts(sortedContacts)
+
+    // init cache
+    shellCache = new Cache({
+      namespace: "shellCRM",
+      policy: {
+          maxEntries: 50000
+      },
+      backend: AsyncStorage
     })
+
+    // check for cache
+    shellCache.getItem( "contacts", (err, entries) => {
+        if(err) return console.log('there is an error')
+      if( entries.length > 0 ) {
+        this.sortAndUpdateContacts( entries )
+      } else {
+          let contacts = db.ref(`users/${userId}/contacts`)
+          contacts.on('value', (snapshot) => {
+            let fullContacts = []
+            snapshot.forEach( (child) => {
+              fullContacts.push({
+                id: child.key,
+                details: child.val()
+              })
+            })
+            this.sortAndUpdateContacts( fullContacts )
+          })
+        }
+    })
+  }
+
+  componentWillUpdate() {
+  }
+
+  // TODO: research the lifecycle methods better. ComponentDidUpdate is running before componentDidMount. That's a problem.
+  componentDidUpdate( prevProps, prevState ) {
+    if ( prevState !== this.state ) {
+      if( shellCache && this.state.contacts.length > 0 ) {
+        shellCache.setItem("contacts", this.state.contacts, function(err) {
+            // key => contacts, value => this.state.contacts
+            if(err) console.log('error with setting cache')
+        })
+      }
+    }
+  }
+
+  sortAndUpdateContacts = ( fullContacts:Array<object> ) => {
+    const sortedContacts = sortContacts( fullContacts )
+    this.updateContacts(sortedContacts)
   }
 
   renderListItem(contact) {
