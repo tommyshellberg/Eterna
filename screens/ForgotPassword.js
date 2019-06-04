@@ -57,14 +57,17 @@ class ResetForm extends React.Component {
                     />
                     </CardItem>
                 </Card>
-                    { !this.props.loading && <Button block onPress={this.onButtonPress}><Text>Send Password Reset Email</Text></Button> }
+                    { !this.props.loading && <Button info block onPress={this.onButtonPress}><Text>Send Password Reset Email</Text></Button> }
                     { this.props.loading && <Spinner color="blue"/> }
             </Container>
         )
     }
 }
 const styles = StyleSheet.create({
-    
+    button: {
+        backgroundColor: "transparent"
+    },
+
     errorText: {
         fontSize: 20,
         alignSelf: 'center',

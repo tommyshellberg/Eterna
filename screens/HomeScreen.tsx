@@ -40,7 +40,7 @@ export default class HomeScreen extends React.Component<Props, State> {
       title: 'Contacts',
       headerRight: (
         <View>
-          <Button transparent success onPress={() => navigation.navigate('AddContact')}>
+          <Button transparent onPress={() => navigation.navigate('AddContact')}>
             <Text style={{color: "#333"}}>Add</Text>
           </Button>
         </View>
@@ -136,6 +136,9 @@ export default class HomeScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "transparent"
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',

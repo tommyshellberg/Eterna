@@ -49,7 +49,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
       title: 'My Profile',
       headerRight: (
         <View>
-          <Button transparent success onPress={() => {
+          <Button transparent onPress={() => {
             firebase.auth().signOut()
               .then ( () => {
                 alert('Signed out!')
@@ -241,7 +241,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
             </CardItem>
           </Card>
           </Form>
-          <Button info full onPress={this.onShare}>
+          <Button style={styles.button} info full onPress={this.onShare}>
             <Text style={{ color: '#333' }} >Share My Info</Text>
           </Button>
         </KeyboardAwareScrollView>
@@ -250,6 +250,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "transparent"
+  },
   container: {
     flex: 1,
     paddingTop: 15,

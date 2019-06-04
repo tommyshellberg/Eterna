@@ -108,9 +108,9 @@ class LoginForm extends React.Component {
                             </Item>
                         </CardItem>
                     </Card>
-                        { !this.props.loading && <Button block style={styles.button} onPress={this.onLoginPress}><Text>Login</Text></Button> }
-                        { !this.props.loading && <Button block style={styles.button} onPress={this.onRegisterPress}><Text>Register</Text></Button> }
-                        { !this.props.loading && <Button block style={styles.button} onPress={this.onResetPress}><Text>Forgot Password?</Text></Button> }
+                        { !this.props.loading && <Button  block style={styles.button} onPress={this.onLoginPress}><Text>Login</Text></Button> }
+                        { !this.props.loading && <Button  block style={styles.button} onPress={this.onRegisterPress}><Text>Register</Text></Button> }
+                        { !this.props.loading && <Button  block style={styles.button} onPress={this.onResetPress}><Text>Forgot Password?</Text></Button> }
                         { this.props.loading && <Spinner color="blue"/> }
                 </View>
             </ImageBackground>
@@ -123,10 +123,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        backgroundColor: '#fff'
     },
     button: {
-        marginTop: 20
+        marginTop: 20,
+        backgroundColor: "transparent"
     },
     bgImage: {
         width: '100%', 

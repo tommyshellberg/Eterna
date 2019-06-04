@@ -48,7 +48,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
       title: 'Profile',
       headerRight: (
         <View>
-          <Button transparent danger onPress={ () => {
+          <Button style={styles.button} danger onPress={ () => {
             db.ref(`users/${userId}/contacts/${navigation.state.params.contact.id}`)
             .remove()
             .then( () => alert('deleted!') )
@@ -217,7 +217,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
           </CardItem>
         </Card>
         </Form>
-        <Button full info onPress={this.onShare}>
+        <Button style={styles.button} full info onPress={this.onShare}>
           <Text style={{ color: '#333' }}>Share This Contact</Text>
         </Button>
       </KeyboardAwareScrollView>
@@ -226,6 +226,9 @@ export default class ProfileScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+    button: {
+      backgroundColor: "transparent"
+  },
   container: {
     flex: 1,
     paddingTop: 15,

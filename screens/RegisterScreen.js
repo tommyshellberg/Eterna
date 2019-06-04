@@ -115,14 +115,16 @@ class RegisterForm extends React.Component {
                         </Item>
                     </CardItem>
                 </Card>
-                    { !this.state.loading && <Button block disabled={this.state.disableSubmit} onPress={this.onButtonPress}><Text>Create Account</Text></Button> }
+                    { !this.state.loading && <Button style={styles.button} block disabled={this.state.disableSubmit} onPress={this.onButtonPress}><Text>Create Account</Text></Button> }
                     { this.state.loading && <Spinner color="blue"/> }
             </Container>
         )
     }
 }
 const styles = StyleSheet.create({
-    
+    button: {
+        backgroundColor: "transparent"
+    },
     errorText: {
         fontSize: 20,
         alignSelf: 'center',
