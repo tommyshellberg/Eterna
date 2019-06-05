@@ -54,7 +54,7 @@ export default class BirthdayScreen extends React.Component<Props, State> {
     // check for cache
     shellCache.getItem( "contacts", (err, entries) => {
         if(err) return console.log('there is an error')
-      if( entries.length > 0 ) {
+      if( entries && entries.length > 0 ) {
         this.sortAndUpdateContacts( entries )
       } else {
           let contacts = db.ref(`users/${userId}/contacts`)
