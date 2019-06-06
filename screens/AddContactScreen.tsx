@@ -114,6 +114,8 @@ export default class AddContactScreen extends React.Component<Props, State> {
     this.userId = await firebase.auth().currentUser.uid
   }
 
+  // @todo - copy this code into the contactsReducer.tsx file within the addNewContact() function.
+  // @todo - we will trigger submission using the addNewContact action in contactsActions.tsx instead.
   handleFormSubmit = async () => {
       // When the button is submitted, add a new record. 
       // Keep in mind the format we use, { id: id, details: this.state }

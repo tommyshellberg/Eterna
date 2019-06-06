@@ -12,8 +12,15 @@ import '@firebase/database'
 
 import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 
+// Redux stuff
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { getCachedContacts } from '../actions/contactsActions'
+
 interface Props {
   navigation: any
+  contacts: object
+  getCachedContacts: Function
 }
 interface State {
   contacts: Array<object>,
@@ -21,7 +28,7 @@ interface State {
   userId: string
 }
 
-export default class HomeScreen extends React.Component<Props, State> {
+class HomeScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -46,6 +53,15 @@ export default class HomeScreen extends React.Component<Props, State> {
         </View>
       )
     }
+  }
+
+  componentDidMount() {
+    console.log('these are the props on the home screen:')
+    console.log(this.props)
+    const {contacts} = this.props
+    this.props.getCachedContacts()
+    console.log('cached contacts:')
+    console.log(contacts)
   }
 
  async componentWillMount() {
@@ -134,6 +150,19 @@ export default class HomeScreen extends React.Component<Props, State> {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const { contacts } = state
+  return { contacts }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    getCachedContacts,
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
 
 const styles = StyleSheet.create({
   button: {

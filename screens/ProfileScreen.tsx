@@ -43,6 +43,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
     
   }
 
+  // @todo - the logic should be copied and moved into contactsReducer.tsx within the deleteContact function.
+  // we will instead call the deleteContact action in contactsActions.tsx
   static navigationOptions = ({navigation}) => {
     return {
       title: 'Profile',

@@ -18,9 +18,6 @@ export default class Loading extends React.Component<Props, State> {
     }
 
     render() {
-        console.log('on the loading screen')
-        console.log('loading props:')
-        console.log(this.props)
         return (
         <View style={styles.container}>
             <Text>Loading</Text>

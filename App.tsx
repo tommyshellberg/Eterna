@@ -3,6 +3,12 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import firebase from '@firebase/app'
 
+//Redux stuff
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import contactsReducer from './reducers/contactsReducer'
+
+// React Navigation stuff
 import AppNavigator from './navigation/AppNavigator';
 
 interface State {
@@ -10,6 +16,8 @@ interface State {
 }
 
 interface Props {}
+
+const store = createStore(contactsReducer)
 
 export default class App extends React.Component<Props, State> {
   state = {
@@ -41,10 +49,13 @@ export default class App extends React.Component<Props, State> {
       );
     } else {
       return (
-        <View style={styles.container}>
+        <Provider store={store}>
+          <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator />
-        </View>
+          </View>
+        </Provider>
+
       );
     }
   }
@@ -52,8 +63,7 @@ export default class App extends React.Component<Props, State> {
   _loadResourcesAsync = async () => {
     return Promise.all([
       Asset.loadAsync([
-        require('./assets/images/robot-dev.png'),
-        require('./assets/images/robot-prod.png'),
+        require('./assets/images/sunbgimage.png')
       ]),
       Font.loadAsync({
         // This is the font that we are using for our tab bar
