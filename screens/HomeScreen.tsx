@@ -15,7 +15,7 @@ import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { getCachedContacts } from '../actions/contactsActions'
+import { getCachedContacts, setUserId } from '../actions/contactsActions'
 
 interface Props {
   navigation: any
@@ -55,19 +55,17 @@ class HomeScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    console.log('these are the props on the home screen:')
-    console.log(this.props)
-    const {contacts} = this.props
-    this.props.getCachedContacts()
-    console.log('cached contacts:')
-    console.log(contacts)
+  componentDidUpdate() {
+    console.log('contacts are: ')
+    console.log(this.props.contacts.contacts)
   }
 
- async componentWillMount() {
-    const userId = await firebase.auth().currentUser.uid;
-    this.setState({ userId })
-    this.getContacts(userId)
+  componentDidMount() {
+    this.props.getCachedContacts()
+    const userId = firebase.auth().currentUser.uid;
+    this.props.setUserId(userId)
+    //this.getContacts(this.props.contacts.userId)
+    // dispatch an action to get cached contacts
   }
 
   async getContacts(userId) {
@@ -153,12 +151,14 @@ class HomeScreen extends React.Component<Props, State> {
 
 const mapStateToProps = (state) => {
   const { contacts } = state
-  return { contacts }
+  const { userId } = state
+  return { contacts, userId }
 }
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
     getCachedContacts,
+    setUserId
   }, dispatch)
 );
 

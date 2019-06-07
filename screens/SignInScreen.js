@@ -4,7 +4,6 @@ import '@firebase/auth'
 import * as yup from 'yup';
 import {debounce} from 'lodash'
 
-
 import { StyleSheet, ImageBackground, View } from 'react-native'
 import { Button, Text, Card, CardItem, Input, Spinner, Container, Item, Label } from 'native-base'
 
@@ -117,6 +116,8 @@ class LoginForm extends React.Component {
         )
     }
 }
+  
+export default LoginForm
 
 const styles = StyleSheet.create({
     container: {
@@ -141,5 +142,3 @@ const styles = StyleSheet.create({
         color: 'red'
     }
   })
-
-  export default LoginForm

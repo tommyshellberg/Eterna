@@ -6,7 +6,7 @@ import firebase from '@firebase/app'
 //Redux stuff
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import contactsReducer from './reducers/contactsReducer'
+import contactsReducer, { setDbRef } from './reducers/contactsReducer'
 
 // React Navigation stuff
 import AppNavigator from './navigation/AppNavigator';
@@ -24,7 +24,7 @@ export default class App extends React.Component<Props, State> {
     isLoadingComplete: false,
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     const config = {
       apiKey: "AIzaSyBfPgnFti35J4GQDUTU_Yf9_wSM9-d-lQs",
       authDomain: "shellcrm-48104.firebaseapp.com",
@@ -34,7 +34,8 @@ export default class App extends React.Component<Props, State> {
       messagingSenderId: "812296684473"
     }
     if(!firebase.apps.length) {
-      await firebase.initializeApp(config);
+      firebase.initializeApp(config)
+      setDbRef()
     }
   }
 

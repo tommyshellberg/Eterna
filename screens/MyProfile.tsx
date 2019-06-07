@@ -11,6 +11,11 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
+// Redux stuff
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { updateProfile } from '../actions/contactsActions'
+
 interface Props {}
 
 interface State {
@@ -25,7 +30,7 @@ interface State {
 
 let db:any = null
 
-export default class ProfileScreen extends React.Component<Props, State> {
+class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -85,6 +90,8 @@ export default class ProfileScreen extends React.Component<Props, State> {
   }
 
   handleStateUpdate = debounce( () => {
+    // @todo - pass in the proper information to updateProfile()
+    this.props.updateProfile(null, null)
     db.ref(`users/${this.userId}/me`)
     .set({
       firstName: this.state.firstName,
@@ -248,6 +255,21 @@ export default class ProfileScreen extends React.Component<Props, State> {
     );
   }
 }
+
+// @todo - we don't need all contacts here. state should just be our own data + userId
+const mapStateToProps = (state) => {
+  const { contacts } = state
+  const { userId } = state
+  return { contacts, userId }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateProfile
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)
 
 const styles = StyleSheet.create({
   button: {

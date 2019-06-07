@@ -13,6 +13,11 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
+//redux stuff
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { addNewContact } from '../actions/contactsActions'
+
 const firstNameSchema = yup.string().required().min(2).max(15)
 const lastNameSchema = yup.string().required().min(2).max(15)
 const emailSchema = yup.string().trim().email()
@@ -41,7 +46,7 @@ interface State {
   disableSubmit: boolean
 }
 
-export default class AddContactScreen extends React.Component<Props, State> {
+class AddContactScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -112,19 +117,25 @@ export default class AddContactScreen extends React.Component<Props, State> {
 
   async componentWillMount() {
     this.userId = await firebase.auth().currentUser.uid
+    console.log('here are the props available on the add contact screen:')
+    console.log(this.props)
   }
 
   // @todo - copy this code into the contactsReducer.tsx file within the addNewContact() function.
-  // @todo - we will trigger submission using the addNewContact action in contactsActions.tsx instead.
+  // @todo - we will trigger submission using the addNewContact dispatch action.
   handleFormSubmit = async () => {
       // When the button is submitted, add a new record. 
       // Keep in mind the format we use, { id: id, details: this.state }
+
+    // @todo - move this crap out to the contactsReducer.tsx file under addNewContact
     
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
-    const dbRef = await db.ref(`users/${this.userId}/contacts`)
-    const contactRef = await dbRef.push()
-    contactRef.set(contactObj)
+    this.props.addNewContact( contactObj, this.props.contacts.userId )
+
+
+
+    // @todo - move the navigation to Home page to a different function and call with a callback?
     .then( () => this.props.navigation.navigate('Home'))
     .catch ( (error) => alert('failed to create contact!'))
   }
@@ -153,7 +164,6 @@ export default class AddContactScreen extends React.Component<Props, State> {
   }
 
   render() {
-    console.time('rendering the add contact screen')
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
         { this.state.showImport && <Textarea
@@ -274,6 +284,21 @@ export default class AddContactScreen extends React.Component<Props, State> {
     );
   }
 }
+
+// @todo - we don't need the full contacts list here. just the FB userId
+const mapStateToProps = (state) => {
+  const { contacts } = state
+  const { userId } = state
+  return { contacts, userId }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    addNewContact
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddContactScreen)
 
 const styles = StyleSheet.create({
   button: {

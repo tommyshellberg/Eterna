@@ -5,6 +5,17 @@ import { AsyncStorage } from 'react-native';
 import moment from 'moment'
 import _ from 'lodash'
 
+// firebase stuff
+import {firebase} from '@firebase/app'
+import '@firebase/auth'
+import '@firebase/database'
+
+let db
+
+module.exports.setDbRef = () => {
+    db = firebase.database()
+}
+
 const INITIAL_STATE = {
     contacts: [],
     userId: ''
@@ -22,9 +33,19 @@ const shellCache = new Cache({
 const contactsReducer = ( state=INITIAL_STATE, action ) => {
     switch(action.type) {
         case 'GET_CACHED_CONTACTS':
-            const contacts= getContactsFromCache()
-            return { ... state, contacts }
+            const cachedContacts = getContactsFromCache()
+            console.log('the contacts returned from getContactsFromCache: ')
+            console.log(cachedContacts)
+            return Object.assign( {}, state, {
+                cachedContacts
+            } )
+        case 'SET_USER_ID':
+            const userId = action.payload.userId
+            return { ...state, userId }
         case 'ADD_NEW_CONTACT':
+            addNewContact(action.payload.contact, action.payload.userId)
+            // @todo - we want to add the new object to the state.contacts array.
+
             // take in a single contact and a userId(for firebase auth purposes)
             // if the addNewContact method returns successful we add the contact to state.
             // @todo - need to add a new single contact to existing contacts. Rest parameters or .push()?
@@ -36,21 +57,35 @@ const contactsReducer = ( state=INITIAL_STATE, action ) => {
             const sortedContacts = sortBirthdaysThirtyDays( state.contacts )
             return { ...state, sortedContacts }
         case 'UPDATE_CONTACT':
+            updateContact(null, null, null)
         // @todo - we don't want to override the existing contacts[] array.
         // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
         return { ...state,  }
+        case 'DELETE_CONTACT':
+            deleteContact(null, null)
+        // @todo - we don't want to override the existing contacts[] array.
+        // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
+            return { ...state,  }
+        case 'UPDATE_PROFILE':
+            updateProfile(null, null)
+            // @todo - we don't want to override the existing contacts[] array.
+            // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
+            return { ...state,  }
         default:
             return state
     }
 }
 
 const getContactsFromCache = () => {
-    shellCache.getItem( "contacts", (err, entries) => {
-        if(err) return console.log('there is an error')
-        console.log('the entries in cache: ')
+    const contacts = shellCache.getItem( "contacts", (err, entries) => {
+        console.log('entries within the function are: ')
         console.log(entries)
+        console.log('entries is a:')
+        console.log(typeof(entries))
+        if(err) return console.log('there is an error')
         return entries
     })
+    return contacts
 }
 
 // take a list of total contacts and filter by birthdays within next 30 days.
@@ -59,6 +94,7 @@ const getContactsFromCache = () => {
 // @todo hook this up to the reducer and create an action.
 
 const sortBirthdaysThirtyDays = ( contacts ) => {
+    console.log('calling sortBirthdays action')
     const now = moment()
     const nextMonth = moment(now).add(1, 'M')
 
@@ -76,15 +112,34 @@ const sortBirthdaysThirtyDays = ( contacts ) => {
    return sortedContacts
 }
 
-const addNewContact = ( contact, userId ) => {
+const addNewContact = async ( contact, userId ) => {
+    console.log('calling addNewContact reducer')
+    console.log('this is the contact object')
+    console.log(contact)
+    console.log('this is the userId')
+    console.log(userId)
+    const dbRef = await db.ref(`users/${userId}/contacts`)
+    const contactRef = await dbRef.push()
+    contactRef.set(contact)
+        .then ( () => alert('success!'))
+        .catch( (err) => alert('error!'))
     // @todo - this is where we have to do the firebase call to add a new item.
 }
 
 const deleteContact = ( contactId, userId ) => {
+    console.log('calling deleteContact reducer')
     // @todo - copy from ProfileScreen.tsx within static navigationOptions.
 }
 
 const updateContact = ( contact, contactId, userId ) => {
+    console.log('calling updateContact reducer')
+    // @todo - copy from handleStateUpdate() in ProfileScreen.tsx.
+    // we still want to call the action within a debounced function 
+    // @performance - consider using a submit button instead of auto updating if it's smoother.
+}
+
+const updateProfile = ( contact, userId ) => {
+    console.log('calling updateProfile reducer')
     // @todo - copy from handleStateUpdate() in ProfileScreen.tsx.
     // we still want to call the action within a debounced function 
     // @performance - consider using a submit button instead of auto updating if it's smoother.

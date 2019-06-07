@@ -43,6 +43,21 @@ export const updateContact = ( contact, contactId, userId ) => ({
     }
 })
 
+export const updateProfile = ( contact, userId ) => ({
+    type: 'UPDATE_PROFILE',
+    payload: {
+        contact,
+        userId
+    }
+})
+
+export const setUserId = ( userId ) => ({
+    type: 'SET_USER_ID',
+    payload: {
+        userId
+    }
+})
+
 // @todo - where do we tell the app to subscribe to our firebase db changes using .on()? 
 // remember that .on() will pull the contacts from the db when initially called so it can't be just be done within a normal lifecycle method.
 // If it's done within a normal lifecycle method it will render loading from cache useless.

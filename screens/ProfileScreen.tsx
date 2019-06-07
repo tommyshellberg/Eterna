@@ -11,6 +11,11 @@ import '@firebase/database'
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
 
+// Redux stuff
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { updateContact } from '../actions/contactsActions'
+
 interface Props {
   // is navigation an object?
   navigation: any
@@ -24,7 +29,7 @@ interface State {
   address: string
 }
 
-export default class ProfileScreen extends React.Component<Props, State> {
+class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -72,7 +77,7 @@ export default class ProfileScreen extends React.Component<Props, State> {
   }
 
   handleStateUpdate = debounce( () => {
-    console.log(this.state)
+    this.props.updateContact( null, null, null )
     db.ref(`users/${userId}/contacts/${this.props.navigation.getParam('id')}`)
     .set(this.state)
     .then( () => alert('successfully updated'))
@@ -226,6 +231,21 @@ export default class ProfileScreen extends React.Component<Props, State> {
     );
   }
 }
+
+// @todo - we don't need all contacts, just THIS contact and the userId for updating.
+const mapStateToProps = (state) => {
+  const { contacts } = state
+  const { userId } = state
+  return { contacts, userId }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    updateContact
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)
 
 const styles = StyleSheet.create({
     button: {

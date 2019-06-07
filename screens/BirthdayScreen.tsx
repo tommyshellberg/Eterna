@@ -11,6 +11,11 @@ import { AsyncStorage } from 'react-native';
 
 import sortContacts from '../components/functions/birthdaySort.js'
 
+// Redux stuff
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { sortBirthdaysThirtyDays } from '../actions/contactsActions'
+
 interface Props {
   navigation: any
 }
@@ -22,7 +27,7 @@ interface State {
 let db = null
 let shellCache = null
 
-export default class BirthdayScreen extends React.Component<Props, State> {
+class BirthdayScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
@@ -38,6 +43,9 @@ export default class BirthdayScreen extends React.Component<Props, State> {
   }
 
  componentDidMount () {
+
+    // @todo - pass in actual arguments here - the list of contacts.
+    this.props.sortBirthdaysThirtyDays(null)
 
     const userId = firebase.auth().currentUser.uid;
     this.setState({userId})
@@ -139,6 +147,21 @@ export default class BirthdayScreen extends React.Component<Props, State> {
     )
   }
 }
+
+// @todo - do we have all of the items from state we need?
+const mapStateToProps = (state) => {
+  const { contacts } = state
+  const { userId } = state
+  return { contacts, userId }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    sortBirthdaysThirtyDays
+  }, dispatch)
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(BirthdayScreen)
 
 const styles = StyleSheet.create({
   container: {
