@@ -91,17 +91,16 @@ class ProfileScreen extends React.Component<Props, State> {
 
   handleStateUpdate = debounce( () => {
     // @todo - pass in the proper information to updateProfile()
-    this.props.updateProfile(null, null)
-    db.ref(`users/${this.userId}/me`)
-    .set({
+    const contactInfo = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       birthday:  this.state.birthday,
       phone: this.state.phone,
       email: this.state.email,
       address: this.state.address
-    })
-    .catch ( (error) => alert('failed to update record!'))
+    }
+
+    this.props.updateProfile( contactInfo, this.props.userId )
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -258,9 +257,10 @@ class ProfileScreen extends React.Component<Props, State> {
 
 // @todo - we don't need all contacts here. state should just be our own data + userId
 const mapStateToProps = (state) => {
-  const { contacts } = state
-  const { userId } = state
-  return { contacts, userId }
+  console.log('this is the state within My Profile which gets passed to props')
+  console.log(state)
+  const userId = state.contacts.userId
+  return { userId }
 }
 
 const mapDispatchToProps = dispatch => (

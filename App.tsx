@@ -6,7 +6,7 @@ import firebase from '@firebase/app'
 //Redux stuff
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import contactsReducer, { setDbRef } from './reducers/contactsReducer'
+import contactsReducer, { getDbRef } from './reducers/contactsReducer'
 
 // React Navigation stuff
 import AppNavigator from './navigation/AppNavigator';
@@ -35,7 +35,7 @@ export default class App extends React.Component<Props, State> {
     }
     if(!firebase.apps.length) {
       firebase.initializeApp(config)
-      setDbRef()
+      getDbRef()
     }
   }
 
@@ -56,8 +56,7 @@ export default class App extends React.Component<Props, State> {
           <AppNavigator />
           </View>
         </Provider>
-
-      );
+      )
     }
   }
 

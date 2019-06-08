@@ -10,9 +10,9 @@ import {firebase} from '@firebase/app'
 import '@firebase/auth'
 import '@firebase/database'
 
-let db
-
-module.exports.setDbRef = () => {
+// set a reference to the firebase database instance which is reused throughout our reducers.
+var db
+export function getDbRef () {
     db = firebase.database()
 }
 
@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     userId: ''
 }
 
-// init cache
+// init local cache
 const shellCache = new Cache({
     namespace: "shellCRM",
     policy: {
@@ -40,6 +40,8 @@ const contactsReducer = ( state=INITIAL_STATE, action ) => {
                 cachedContacts
             } )
         case 'SET_USER_ID':
+            console.log('firing the SET_USER_ID action')
+            console.log(action.payload.userId)
             const userId = action.payload.userId
             return { ...state, userId }
         case 'ADD_NEW_CONTACT':
@@ -67,7 +69,9 @@ const contactsReducer = ( state=INITIAL_STATE, action ) => {
         // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
             return { ...state,  }
         case 'UPDATE_PROFILE':
-            updateProfile(null, null)
+            console.log('action.payload: ')
+            console.log(action.payload)
+            updateProfile( action.payload.contact, action.payload.userId)
             // @todo - we don't want to override the existing contacts[] array.
             // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
             return { ...state,  }
@@ -121,7 +125,7 @@ const addNewContact = async ( contact, userId ) => {
     const dbRef = await db.ref(`users/${userId}/contacts`)
     const contactRef = await dbRef.push()
     contactRef.set(contact)
-        .then ( () => alert('success!'))
+        .then ( () => addNewContactToCache(contact) )
         .catch( (err) => alert('error!'))
     // @todo - this is where we have to do the firebase call to add a new item.
 }
@@ -140,9 +144,28 @@ const updateContact = ( contact, contactId, userId ) => {
 
 const updateProfile = ( contact, userId ) => {
     console.log('calling updateProfile reducer')
+    db.ref(`users/${userId}/me`)
+    .set(contact)
+    .then( () => alert('updated!'))
+    .catch ( (error) => alert('failed to update record!'))
     // @todo - copy from handleStateUpdate() in ProfileScreen.tsx.
     // we still want to call the action within a debounced function 
     // @performance - consider using a submit button instead of auto updating if it's smoother.
+}
+
+const addNewContactToCache = ( contact ) => {
+    const contacts = getContactsFromCache()
+    console.log('contacts in addNewContactToCache')
+    console.log(typeof(contacts))
+    console.log(contacts)
+    const newContacts = Object.assign( {}, contacts, { contact } )
+    console.log('newContacts object:')
+    console.log(newContacts)
+    /* shellCache.setItem("contacts", newContacts, function(err) {
+        // key => contacts, value => this.state.contacts
+        if(err) console.log('error with setting cache')
+    })
+    */
 }
 
 export default combineReducers({
