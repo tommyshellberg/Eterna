@@ -14,10 +14,11 @@ import CustomDatePicker from '../components/DatePicker'
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { updateProfile } from '../actions/contactsActions'
+import { updateProfile, getProfileData } from '../actions/contactsActions'
 
 interface Props {}
 
+// @todo - remove loading from internal state and load from this.props
 interface State {
   firstName: string,
   lastName: string,
@@ -28,14 +29,10 @@ interface State {
   loading: boolean
 }
 
-let db:any = null
-
 class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-    this.userId = ''
-    db = firebase.database();
   }
 
   state: State = {
@@ -69,21 +66,22 @@ class ProfileScreen extends React.Component<Props, State> {
     }
 }
 
-  async componentWillMount() {
-    this.setState({loading: true})
-    this.userId = await firebase.auth().currentUser.uid;
-    let me = db.ref(`users/${this.userId}/me`)
-    let obj = {}
-    me.on('value', (snapshot) => {
-      snapshot.forEach( (child) => {
-        const key = child.key
-        const val = child.val()
-        obj[key] = val
-      })
-      this.setState(obj)
-    })
-    this.setState({loading: false})
-  }
+componentDidMount() {
+  console.log('calling getProfileData action within componentDidMount')
+  this.props.getProfileData( this.props.userId )
+  console.log('this is the me property of props')
+  console.log(this.props.me)
+  // here we want to grab the cached data. 
+  // call the .on() method with an if statement.
+  // we only update state from within the .on() method if the object from cached data DOES NOT equal the object created from the .on() method 
+  // in other words, if the cached data is stale.
+  // in the future this could be a problem. if you lose connectivity after updating something the cache might update but not the db.
+  // in that case the cache is the correct source of truth.
+}
+
+// @todo - this should be loaded from cache initially if possible.
+// We then need to figure out how to use the .on() method without needing to overwrite the data or update state unnecessarily.
+// actually, we don't need the .on() method at all. we don't need to listen for changes as we control how changes are made.
 
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text}) 
@@ -150,6 +148,7 @@ class ProfileScreen extends React.Component<Props, State> {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
         { 
+          // @todo - change to this.props.loading
           this.state.loading && <Spinner/>
         }
         <Form>
@@ -256,16 +255,20 @@ class ProfileScreen extends React.Component<Props, State> {
 }
 
 // @todo - we don't need all contacts here. state should just be our own data + userId
+// @todo - after we clean up the state object(get rid of the extra contacts property within it) clean this up.
 const mapStateToProps = (state) => {
   console.log('this is the state within My Profile which gets passed to props')
   console.log(state)
   const userId = state.contacts.userId
-  return { userId }
+  const me = state.contacts.me
+  const loading = state.contacts.loading
+  return { userId, me, loading }
 }
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    updateProfile
+    updateProfile,
+    getProfileData
   }, dispatch)
 );
 

@@ -1,5 +1,15 @@
-export const getCachedContacts = () => ({ 
-    type: 'GET_CACHED_CONTACTS' 
+export const getContacts = ( userId ) => ({ 
+    type: 'GET_CONTACTS',
+    payload: {
+        userId
+    }
+})
+
+export const updateContacts = ( contacts ) => ({
+    type: 'UPDATE_CONTACTS',
+    payload: {
+        contacts
+    }
 })
 
 // @todo - we need a payload here, right? Take in the existing state or no?
@@ -53,6 +63,17 @@ export const updateProfile = ( contact, userId ) => ({
 
 export const setUserId = ( userId ) => ({
     type: 'SET_USER_ID',
+    payload: {
+        userId
+    }
+})
+
+export const getDbRef = () => ({
+    type: 'GET_DB_REF'
+})
+
+export const getProfileData = ( userId ) => ({
+    type: 'GET_PROFILE_DATA',
     payload: {
         userId
     }
