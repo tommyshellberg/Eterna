@@ -18,7 +18,8 @@ export function getDbRef () {
 
 const INITIAL_STATE = {
     contacts: [],
-    userId: ''
+    userId: '',
+    dbRef: null
 }
 
 // init local cache
@@ -30,10 +31,13 @@ const shellCache = new Cache({
     backend: AsyncStorage
 })
 
-const contactsReducer = ( state=INITIAL_STATE, action ) => {
+export function contactsReducer ( state=INITIAL_STATE, action ) {
     switch(action.type) {
         case 'UPDATE_CONTACTS':
-        const newContacts = action.payload.contacts
+        const newContacts = action.payload
+        if ( !state && !action.payload ) return INITIAL_STATE
+        if ( !action.payload ) return state
+
         return Object.assign( {}, state, {
             contacts: newContacts
         } )
@@ -207,7 +211,3 @@ const addNewContactToCache = ( contact ) => {
     })
     */
 }
-
-export default combineReducers({
-    contacts: contactsReducer
-})

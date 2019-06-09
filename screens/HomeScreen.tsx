@@ -19,7 +19,7 @@ import { getContacts, setUserId, updateContacts, getDbRef } from '../actions/con
 
 interface Props {
   navigation: any
-  contacts: object
+  contacts: Array<object>
   getContacts: Function,
   setUserId: Function,
   userId: string,
@@ -32,7 +32,7 @@ interface State {
   loading: boolean
 }
 
-var init = true
+var init: boolean = true
 
 class HomeScreen extends React.Component<Props, State> {
 
@@ -59,19 +59,12 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { dbRef } = this.props.contacts
-    const { userId } = this.props.contacts
-
-    console.log('the userId within Home Screen are:')
-    console.log(userId)
-    console.log('the contacts within Home Screen are:')
-    console.log(this.props.contacts.contacts)
-    console.log('the loading bool within Home Screen are:')
-    console.log(this.state.loading)
+    const { dbRef } = this.props
+    const { userId } = this.props
 
     if( init && dbRef && userId ) {
       const contactsRef =  dbRef.ref(`users/${userId}/contacts`)
-      let contacts = []
+      let contacts: Array<any> = []
       contactsRef.on('value', snapshot => {
           snapshot.forEach( (child) => {
             contacts.push({
@@ -79,18 +72,13 @@ class HomeScreen extends React.Component<Props, State> {
               details: child.val()
             })
           })
-          console.log('contacts are updating')
           if (init) init = false
           contacts = _.sortBy( contacts, [ (o) => o.details.firstName ] )
-          console.log('the context of this within the nested if statement in componentDidUpdate is:')
-          console.log(this)
           this.props.updateContacts(contacts)
           this.setState({
             loading: false
           })
         })
-        console.log('the contacts within getContactsFromDB is: ')
-        console.log(contacts)
     }
   }
 
@@ -154,7 +142,7 @@ class HomeScreen extends React.Component<Props, State> {
               keyExtractor={this._keyExtractor}
             />
           }
-          { !this.state.loading && this.props.contacts.contacts.length === 0 && this.createContactPrompt() }
+          { !this.state.loading && this.props.contacts.length === 0 && this.createContactPrompt() }
         </View>
     )
   }

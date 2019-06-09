@@ -6,7 +6,7 @@ import firebase from '@firebase/app'
 //Redux stuff
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import contactsReducer, { getDbRef } from './reducers/contactsReducer'
+import {contactsReducer, getDbRef } from './reducers/contactsReducer'
 
 // React Navigation stuff
 import AppNavigator from './navigation/AppNavigator';
