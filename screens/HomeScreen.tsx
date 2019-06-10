@@ -8,7 +8,6 @@ import {
 import _ from 'lodash'
 import firebase from '@firebase/app'
 import '@firebase/auth'
-import '@firebase/database'
 
 import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 
@@ -28,7 +27,6 @@ interface Props {
   dbRef: any
 }
 interface State {
-  contacts: Array<object>,
   loading: boolean
 }
 
@@ -41,7 +39,6 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   state: State = {
-    contacts: [],
     loading: true
   }
 
@@ -100,6 +97,7 @@ class HomeScreen extends React.Component<Props, State> {
 
   // @todo: move checkLoginStatus() higher up in the app to force them out of main screen back to auth.
   // @todo: implement caching for data.
+  // @todo: maybe we can check props.userId before we make any actions(update, add, delete). if it's null go to login page.
 
   checkLoginStatus() {
     firebase.auth().onAuthStateChanged(function(user) {
@@ -112,6 +110,7 @@ class HomeScreen extends React.Component<Props, State> {
     });
   }
 
+  // @todo: do we bother with the pull to refresh since FB does it? Or good to have a backup force refresh?
   refreshData = () => {
     this.props.getContacts(this.props.userId)
   }
@@ -142,7 +141,7 @@ class HomeScreen extends React.Component<Props, State> {
               keyExtractor={this._keyExtractor}
             />
           }
-          { !this.state.loading && this.props.contacts.length === 0 && this.createContactPrompt() }
+          { !this.state.loading && this.props.contacts.contacts.length === 0 && this.createContactPrompt() }
         </View>
     )
   }

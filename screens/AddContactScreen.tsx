@@ -27,6 +27,8 @@ const addressSchema =  yup.string().min(10).max(100)
 
 interface Props {
   navigation: any
+  userId: string,
+  addNewContact: Function
 }
 
 interface State {
@@ -66,8 +68,6 @@ class AddContactScreen extends React.Component<Props, State> {
         isValidaddress: false,
         disableSubmit: true
     }
-    this.userId = ''
-    var db = firebase.database();
   }
 
   static navigationOptions = {
@@ -115,8 +115,7 @@ class AddContactScreen extends React.Component<Props, State> {
       }
   }, 500)
 
-  async componentWillMount() {
-    this.userId = await firebase.auth().currentUser.uid
+  componentDidMount() {
     console.log('here are the props available on the add contact screen:')
     console.log(this.props)
   }
@@ -131,7 +130,7 @@ class AddContactScreen extends React.Component<Props, State> {
     
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
-    this.props.addNewContact( contactObj, this.props.contacts.userId )
+    this.props.addNewContact( contactObj, this.props.userId )
 
 
 
@@ -287,9 +286,8 @@ class AddContactScreen extends React.Component<Props, State> {
 
 // @todo - we don't need the full contacts list here. just the FB userId
 const mapStateToProps = (state) => {
-  const { contacts } = state
   const { userId } = state
-  return { contacts, userId }
+  return { userId }
 }
 
 const mapDispatchToProps = dispatch => (
