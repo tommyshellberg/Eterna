@@ -53,8 +53,7 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
             } )
 
         case 'SET_USER_ID':
-            console.log('firing the SET_USER_ID action')
-            console.log(action.payload.userId)
+            if( !action.payload || !action.payload.userId ) return state
             const userId = action.payload.userId
             return { ...state, userId }
 
@@ -91,28 +90,34 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
         return { ...state,  }
 
         case 'DELETE_CONTACT':
-            deleteContact(null, null)
+        // @todo - we might need a better way to do this if findIndex() is too slow to find the index based on the ID
+        if ( !action.payload || !action.payload.userId || !action.payload.contactId) return state
+        const deleteContact = () => {
+            const contacts = state.contacts
+            const index = contacts.findIndex( (x) => x.id === action.payload.contactId )
+            const newContacts = [
+                ...contacts.slice( 0, index ),
+                ...contacts.slice( index + 1 )
+            ]
+            return newContacts
+        }
         // @todo - we don't want to override the existing contacts[] array.
         // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
-            return { ...state,  }
+            return { ...state, contacts: deleteContact() }
 
         case 'GET_PROFILE_DATA':
         // we want to grab the profile data either from cache or from the database. 
         // then, return that profile data as part of new state.
-            console.log('calling getProfileData function')
-            const me = getProfileData(action.payload.userId)
-            console.log('this is the me object from getProfileData:')
-            console.log(me)
-        return { ...state, me}
+        // the incoming payload is an object called 'me' which represents my profile data.
+
+        return { ...state }
 
         case 'UPDATE_PROFILE':
-            console.log('action.payload: ')
-            console.log(action.payload)
-            updateProfile( action.payload.contact, action.payload.userId)
-            // @todo - we don't want to override the existing contacts[] array.
-            // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
-        return { ...state,  }
-        
+            // the plan is actually to just calculate an entirely new state object and return it.
+            // then we have to figure out how to update in the db with that new state object.
+            // @todo - do we have a 'me' property as part of state?
+        return { ...state, me: action.payload.me }
+
         default:
             return state
     }
@@ -185,6 +190,7 @@ const updateContact = ( contact, contactId, userId ) => {
 }
 
 const updateProfile = ( contact, userId ) => {
+
     console.log('calling updateProfile reducer')
     db.ref(`users/${userId}/me`)
     .set(contact)

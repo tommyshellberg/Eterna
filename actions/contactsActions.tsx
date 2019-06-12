@@ -53,11 +53,10 @@ export const updateContact = ( contact, contactId, userId ) => ({
     }
 })
 
-export const updateProfile = ( contact, userId ) => ({
+export const updateProfile = ( me ) => ({
     type: 'UPDATE_PROFILE',
     payload: {
-        contact,
-        userId
+        me
     }
 })
 
