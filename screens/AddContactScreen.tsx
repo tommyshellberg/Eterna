@@ -122,21 +122,14 @@ class AddContactScreen extends React.Component<Props, State> {
 
   // @todo - copy this code into the contactsReducer.tsx file within the addNewContact() function.
   // @todo - we will trigger submission using the addNewContact dispatch action.
-  handleFormSubmit = async () => {
+  handleFormSubmit = () => {
       // When the button is submitted, add a new record. 
-      // Keep in mind the format we use, { id: id, details: this.state }
-
-    // @todo - move this crap out to the contactsReducer.tsx file under addNewContact
-    
+      // Keep in mind the format we use, { id: id, details: this.state }    
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
     this.props.addNewContact( contactObj, this.props.userId )
-
-
-
-    // @todo - move the navigation to Home page to a different function and call with a callback?
-    .then( () => this.props.navigation.navigate('Home'))
-    .catch ( (error) => alert('failed to create contact!'))
+    // @todo - send a message to the Home screen so we can show a modal that says "success!"
+    //this.props.navigation.navigate('Home')
   }
 
   getFormattedBirthday = (date) => {

@@ -1,3 +1,18 @@
+interface Details {
+    address: string;
+    birthday: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+}
+
+interface Contact {
+    details: object,
+    id: string
+}
+
+
 export const getContacts = ( userId ) => ({ 
     type: 'GET_CONTACTS',
     payload: {
@@ -12,9 +27,11 @@ export const updateContacts = ( contacts ) => ({
     }
 })
 
-// @todo - we need a payload here, right? Take in the existing state or no?
-export const sortBirthdaysThirtyDays = () => ({ 
-    type: 'SORT_BIRTHDAYS' 
+export const sortBirthdaysThirtyDays = ( contacts ) => ({ 
+    type: 'SORT_BIRTHDAYS',
+    payload: {
+        contacts
+    }
 })
 
 /* take in the object representing a new contact and create a new one
@@ -22,7 +39,7 @@ export const sortBirthdaysThirtyDays = () => ({
  * @param string userId
  * @todo - figure out structure of the payload, a new object with contact and userId, right? 
 */
-export const addNewContact = ( contact, userId ) => ({
+export const addNewContact = ( contact:Contact, userId ) => ({
     type: 'ADD_NEW_CONTACT',
     payload: { contact, userId }
 })
@@ -44,7 +61,7 @@ export const deleteContact = ( contactId, userId ) => ({
  * @param string contactId - the contactID stored in Firebase for this contact
  * @param string userId - the logged-in user's Firebase id
 */
-export const updateContact = ( contact, contactId, userId ) => ({
+export const updateContact = ( contact:Contact, contactId, userId ) => ({
     type: 'UPDATE_CONTACT',
     payload: {
         contact,

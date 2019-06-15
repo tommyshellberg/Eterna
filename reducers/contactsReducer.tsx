@@ -16,6 +16,17 @@ export function getDbRef () {
     db = firebase.database()
 }
 
+interface State {
+    contacts: Array<object>,
+    userId: string,
+    dbRef: any
+}
+
+interface Action {
+    type: string,
+    payload: object
+}
+
 const INITIAL_STATE = {
     contacts: [],
     userId: '',
@@ -31,23 +42,22 @@ const shellCache = new Cache({
     backend: AsyncStorage
 })
 
-export function contactsReducer ( state=INITIAL_STATE, action ) {
+export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
     switch(action.type) {
 
         case 'UPDATE_CONTACTS':
-        const newContacts = action.payload
-        if ( !state && !action.payload ) return INITIAL_STATE
+        if ( !state || !state.contacts && !action.payload ) return INITIAL_STATE
         if ( !action.payload ) return state
 
         return Object.assign( {}, state, {
-            contacts: newContacts
+            contacts: action.payload.contacts
         } )
         
         case 'GET_CONTACTS':
+            // @todo - this should only retrieve cached contacts.
             //const cachedContacts = getContactsFromCache()
-            let contacts = getContactsFromDB( action.payload.userId )
-            console.log('the contacts returned from getContactsFromDB: ')
-            console.log(contacts)
+            let contacts:Array<object> = getContactsFromDB( action.payload.userId )
+
             return Object.assign( {}, state, {
                 contacts
             } )
@@ -64,9 +74,13 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
 
         case 'ADD_NEW_CONTACT':
             // @todo - we want to add the new object to the state.contacts array.
-            const oldContacts = state.contacts
+
+            const oldContacts:Array<object> = state.contacts
             if( !action.payload ) return state
-            const newContact = action.payload.contact
+            const newContact = {
+                details: action.payload.contact,
+                id: oldContacts.length + 1
+            }
             // take in a single contact and a userId(for firebase auth purposes)
             // @todo: existing plan - add the contact to state regardless of response from addNewContact().
             // this means we figure out a way to handle out of sync local cache and db data.
@@ -80,8 +94,9 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
             // @todo - check if state.contacts is actually correct!
             // @performance - we don't want to override the existing contacts[] array. 
             // make a new array and add it to state to not override previous contacts.
-            const sortedContacts = sortBirthdaysThirtyDays( state.contacts )
-        return { ...state, sortedContacts }
+            if ( !action.payload || !action.payload.contacts ) return console.log('shit is falsy')
+            const upcomingBirthdays = sortBirthdaysThirtyDays( action.payload.contacts )
+        return { ...state, upcomingBirthdays }
 
         case 'UPDATE_CONTACT':
             updateContact(null, null, null)
@@ -113,9 +128,7 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
         return { ...state }
 
         case 'UPDATE_PROFILE':
-            // the plan is actually to just calculate an entirely new state object and return it.
-            // then we have to figure out how to update in the db with that new state object.
-            // @todo - do we have a 'me' property as part of state?
+        if ( !action.payload || !action.payload.me ) return state
         return { ...state, me: action.payload.me }
 
         default:
@@ -125,10 +138,7 @@ export function contactsReducer ( state=INITIAL_STATE, action ) {
 
 const getContactsFromCache = () => {
     const contacts = shellCache.getItem( "contacts", (err, entries) => {
-        console.log('entries within the function are: ')
-        console.log(entries)
-        console.log('entries is a:')
-        console.log(typeof(entries))
+
         if(err) return console.log('there is an error')
         return entries
     })
@@ -142,13 +152,12 @@ const getContactsFromDB = (userId) => {
 // take a list of total contacts and filter by birthdays within next 30 days.
 // @param array contacts
 // return array sortedContacts
-// @todo hook this up to the reducer and create an action.
+// @todo rework this without mutating the contacts object. No more tempbirthday!
 
 const sortBirthdaysThirtyDays = ( contacts ) => {
-    console.log('calling sortBirthdays action')
     const now = moment()
     const nextMonth = moment(now).add(1, 'M')
-
+    console.log(typeof(contacts))
     const filteredContactsArray = contacts
     .filter( (contact) => contact.details.birthday !== undefined )
     .map(contact => { 
@@ -160,6 +169,7 @@ const sortBirthdaysThirtyDays = ( contacts ) => {
       moment(contact.details.tempBirthday).isBetween(now, nextMonth)
     )
    const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
+   sortedContacts.map( (x) => delete(x.tempBirthday))
    return sortedContacts
 }
 

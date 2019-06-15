@@ -55,39 +55,66 @@ class HomeScreen extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate( prevProps, prevState ) {
+
     const { dbRef } = this.props
     const { userId } = this.props
+    const contactsRef =  dbRef.ref(`users/${userId}/contacts`)
+
+    // @todo - fix a loop of details being added.
+    if( !init && prevProps.contacts !== this.props.contacts ) {
+      console.log('props have updated')
+      // @todo - I think I have to convert contacts[] to contacts{} to send to FB.
+      // either that or rework the whole app to use contacts{}
+      const { contacts } = this.props
+      console.log('contacts in componentDidUpdate:')
+      console.log(contacts)
+      contactsRef.set(contacts)
+    }
 
     if( init && dbRef && userId ) {
-      const contactsRef =  dbRef.ref(`users/${userId}/contacts`)
-      let contacts: Array<any> = []
+      let contacts
       contactsRef.on('value', snapshot => {
+        contacts = []
           snapshot.forEach( (child) => {
+            console.log('within the forEach')
+            console.log('child.key:')
+            console.log(child.key)
+            console.log('child.key:')
+            console.log(child.val().details)
             contacts.push({
               id: child.key,
-              details: child.val()
+              details: child.val().details
             })
           })
           if (init) init = false
           contacts = _.sortBy( contacts, [ (o) => o.details.firstName ] )
+
           this.props.updateContacts(contacts)
           this.setState({
             loading: false
           })
         })
+        return
     }
+  }
+
+  componentWillMount() {
+
   }
 
   componentDidMount() {
     const userId = firebase.auth().currentUser.uid;
     this.props.setUserId(userId)
     this.props.getDbRef()
+
     //this.props.getContacts(userId)
-    // dispatch an action to get cached contacts
+    // @todo - dispatch an action to get cached contacts
   }
 
   renderListItem = (contact) => {
+    console.log('the contact inside of renderlistitem: ')
+    console.log(contact)
     return (
       <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact, userId: this.props.userId } )} >
         <Text>{`${contact.details.firstName} ${contact.details.lastName}`}</Text>
@@ -132,26 +159,29 @@ class HomeScreen extends React.Component<Props, State> {
     return (
         <View style={styles.container}>
           { this.state.loading && <Spinner/> }
-          { !this.state.loading && this.props.contacts.contacts.length > 0 && 
+          { !this.state.loading && this.props.contacts.length > 0 && 
             <FlatList 
               refreshing={this.state.loading}
               onRefresh={this.refreshData}
-              data={this.props.contacts.contacts}
+              data={this.props.contacts}
               renderItem = { ({item}) => this.renderListItem(item) }
               keyExtractor={this._keyExtractor}
             />
           }
-          { !this.state.loading && this.props.contacts.contacts.length === 0 && this.createContactPrompt() }
+          { !this.state.loading && this.props.contacts.length === 0 && this.createContactPrompt() }
         </View>
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  const { contacts } = state
+  
+
+  const contacts:Array<any> = state.contacts
   const { userId } = state
   const { dbRef } = state
-  return { contacts, userId, dbRef }
+  const props = { contacts, userId, dbRef }
+  return props
 }
 
 const mapDispatchToProps = dispatch => (

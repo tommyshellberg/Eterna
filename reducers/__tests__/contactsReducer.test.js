@@ -1,6 +1,5 @@
 import {contactsReducer} from '../contactsReducer'
-
-const contactsEmptyArray = []
+import moment from 'moment'
 
 const contactsWithSingleContact = [
   {
@@ -12,20 +11,9 @@ const contactsWithSingleContact = [
         lastName: "Jimsons",
         phone: "45804563211",
       },
-      id: "LfoKxcDqq2VvPFAS8MV",
-    }
+      id: 1,
+    },
 ]
-const newSingleContact = [{
-  details: {
-    address: "new address",
-    birthday: "2019-05-26T00:00:00+02:00",
-    email: "tom@tom.blog",
-    firstName: "Tom",
-    lastName: "Tomson",
-    phone: "45805555555",
-  },
-  id: "1234",
-}]
 
 describe('Test contactsReducer', () => {
 
@@ -49,18 +37,6 @@ describe('Test contactsReducer', () => {
 describe('Test UPDATE_CONTACTS in contactsReducer', () => {
 
   const type = 'UPDATE_CONTACTS'
-
-  it('should return a state object with a contacts array if state is null and payload is single contact', () => {
-    const state = null
-    const payload = contactsWithSingleContact
-    const action = { type, payload }
-    const expectedState = {
-      contacts: [],
-      userId: '',
-      dbRef: null
-  }
-  })
-
   it('should return a state object with empty contacts array if state and payload is null', () => {
     const payload = null
     const action = { type, payload }
@@ -90,17 +66,17 @@ describe('Test UPDATE_CONTACTS in contactsReducer', () => {
 
   it( 'should return a state object with a contacts array when updating contacts', () => {
       const state = {
-        contacts: contactsEmptyArray,
+        contacts: [],
         userId: 'userId',
         dbRef: 'dbRef'
       }
-      const newContacts = newSingleContact
+      const newContacts = contactsWithSingleContact
       const expectedState = {
-        contacts: newSingleContact,
+        contacts: contactsWithSingleContact,
         userId: 'userId',
         dbRef: 'dbRef'
       }
-      const payload = newContacts
+      const payload = { contacts: newContacts }
       const action = { type, payload }
       const newState = contactsReducer( state, action )
       expect(newState).toEqual(expectedState)
@@ -112,16 +88,50 @@ describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
   // @todo - should probably add actions to a constants file now.
   const type='ADD_NEW_CONTACT'
   const newContact = {
-    details: {
       address: "new address",
       birthday: "2019-05-26T00:00:00+02:00",
       email: "tom@tom.blog",
       firstName: "Tom",
       lastName: "Tomson",
       phone: "45805555555",
-    },
-    id: "1234",
-  }
+    }
+
+  it('should add a new contact when existing contacts are empty', () => {
+    const userId = 'userId'
+    const contact = newContact
+    const contacts = []
+    const state = {
+      contacts,
+      userId,
+      dbRef: null
+    }
+    const payload = {contact, userId}
+    const action = { type, payload }
+    newContacts = [
+      newContact
+    ]
+
+    const expectedState = {
+      contacts: [
+        {
+          details: {
+            address: "new address",
+            birthday: "2019-05-26T00:00:00+02:00",
+            email: "tom@tom.blog",
+            firstName: "Tom",
+            lastName: "Tomson",
+            phone: "45805555555",
+          },
+          id: 1
+        }
+      ],
+      userId,
+      dbRef: null
+    }
+    const newState = contactsReducer( state, action )
+    expect(newState).toEqual(expectedState)
+
+  })
 
   it('should add a new contact to existing array containing single contact', () => {
     const userId = 'userId'
@@ -144,7 +154,7 @@ describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
             lastName: "Jimsons",
             phone: "45804563211",
           },
-          id: "LfoKxcDqq2VvPFAS8MV",
+          id: 1,
         },
         {
           details: {
@@ -155,7 +165,7 @@ describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
             lastName: "Tomson",
             phone: "45805555555",
           },
-          id: "1234",
+          id: 2,
         }
     ]
 
@@ -414,6 +424,30 @@ describe('Test SET_USER_ID in contactsReducer', () => {
 
 })
 
+describe('Test GET_DB_REF in contactsReducer', () => {
+  const type = 'GET_DB_REF'
+  const contacts = []
+
+  it('should return original state with dbRef', () => {
+    const dbRef = undefined
+    const userId = null
+    const state = {
+      contacts,
+      userId,
+      dbRef
+    }
+    const expectedState = {
+      contacts: [],
+      userId: null,
+      dbRef: undefined
+    }
+    const action = { type }
+  
+    const newState = contactsReducer( state, action )
+    expect(newState).toEqual(expectedState)
+})
+})
+
 describe('Test UPDATE_PROFILE in contactsReducer', () => {
   const type = 'UPDATE_PROFILE'
 
@@ -447,4 +481,103 @@ describe('Test UPDATE_PROFILE in contactsReducer', () => {
     const newState = contactsReducer( state, action )
     expect(newState).toEqual(expectedState)
   })
+
+  it('should return existing state if me is falsy or payload is falsy', () => {
+    const userId = '1234'
+    const dbRef = null
+    const me = {
+      address: "new address",
+      birthday: "2019-05-26T00:00:00+02:00",
+      email: "tom@tom.blog",
+      firstName: "Tom",
+      lastName: "Tomson",
+      phone: "45805555555",
+    }
+    const newMe = null
+    const state = {
+      contacts: contactsWithSingleContact,
+      userId,
+      me,
+      dbRef
+    }
+    const expectedState = {
+      contacts: contactsWithSingleContact,
+      userId,
+      me,
+      dbRef
+    }
+  
+    const payload = { me: newMe }
+    const action = { type, payload }
+  
+    const newState = contactsReducer( state, action )
+    expect(newState).toEqual(expectedState)
+  })
 })
+
+describe ( 'test birthday sorting', () => {
+
+  const type = 'SORT_BIRTHDAYS'
+
+  // @todo - we cannot hardcode the birthdays here or else our tests will fail after a given time.
+  const now = moment()
+  const upcomingBirthday = moment(now).add(1, 'week').toString()
+  const twoMonthsFromNow = moment(now).add(2, 'M').toString()
+  const contactsOneUpcomingBirthday = [{
+    "id": 1,
+    "details": {
+        "firstName": "Thomas",
+        "lastName": "Shellberg",
+        "birthday": twoMonthsFromNow,
+        "phone": "(480)555-5555",
+        "email": "thomas@shellberg.com",
+        "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
+    }
+  },
+  {
+    "id": 2,
+    "details": {
+        "firstName": "Frank",
+        "lastName": "Frankerson",
+        "birthday": upcomingBirthday,
+        "phone": "(480)555-5555",
+        "email": "thomas@shellberg.com",
+        "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
+    }
+  }]
+
+  const upcomingBirthdays = [
+    {
+      "id": 2,
+      "details": {
+          "firstName": "Frank",
+          "lastName": "Frankerson",
+          "birthday": upcomingBirthday,
+          "phone": "(480)555-5555",
+          "email": "thomas@shellberg.com",
+          "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
+      }
+    }]
+  it( 'should sort contacts based on date, ignoring year', () => {
+      const state = {
+        contacts: contactsOneUpcomingBirthday,
+        me: {},
+        dbRef: null,
+        userId: '1234'
+      }
+      const expectedState = {
+        contacts: contactsOneUpcomingBirthday,
+        me: {},
+        dbRef: null,
+        userId: '1234',
+        upcomingBirthdays
+      }
+      const payload = {
+        contacts: contactsOneUpcomingBirthday 
+      }
+      const action = { type, payload }
+      const newState = contactsReducer(state, action)
+      expect(newState).toEqual(expectedState)
+  } )
+
+} )
