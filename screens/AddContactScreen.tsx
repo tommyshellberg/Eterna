@@ -163,7 +163,7 @@ class AddContactScreen extends React.Component<Props, State> {
             onChangeText={(text) => this.handleTextUpdate(text, 'importJSON')}
         ></Textarea> }
         <Button style={styles.button} full info onPress={this.handleImport}>
-            <Text style={{ color: '#333' }} >{ this.state.showImport ? 'Import' : 'Import from JSON' }</Text>
+            <Text style={{color:'#fff' }} >{ this.state.showImport ? 'Import' : 'Import from JSON' }</Text>
         </Button>
         <Form>
           <Card>
@@ -266,7 +266,7 @@ class AddContactScreen extends React.Component<Props, State> {
           </Card>
           </Form>
           <Button style={styles.button} full info onPress={this.handleFormSubmit} disabled={this.state.disableSubmit}>
-            <Text style={{ color: '#333' }}>Create Contact</Text>
+            <Text style={{color:'#fff' }}>Create Contact</Text>
           </Button>
         </KeyboardAwareScrollView>
     );
@@ -289,6 +289,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddContactScreen)
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: 'transparent'
+    backgroundColor: '#3F51B5'
   }
 })

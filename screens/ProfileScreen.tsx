@@ -55,7 +55,7 @@ class ProfileScreen extends React.Component<Props, State> {
       title: 'Profile',
       headerRight: (
         <View>
-          <Button style={styles.button} danger onPress={ () => {
+          <Button style={{ backgroundColor: 'transparent' }} transparent onPress={ () => {
             // @todo - call delete contact action instead of direct db call.
             const contactId = navigation.state.params.contact.id
             const deleteContact = navigation.getParam('deleteContact')
@@ -256,7 +256,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)
 
 const styles = StyleSheet.create({
     button: {
-      backgroundColor: "transparent"
+      backgroundColor: "#3F51B5"
   },
   container: {
     flex: 1,

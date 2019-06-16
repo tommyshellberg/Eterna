@@ -12,7 +12,8 @@ export default createStackNavigator({
       screen: SignInScreen,
       navigationOptions: () => ({
         title: `Login`,
-        headerBackTitle: null
+        headerBackTitle: null,
+        headerLeft: null
       }),
     },
     Register: {

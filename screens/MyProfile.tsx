@@ -152,6 +152,9 @@ componentDidUpdate() {
           // @todo - change to this.props.loading
           this.state.loading && <Spinner/>
         }
+        <Button style={styles.button} full onPress={this.onShare}>
+          <Text style={{ color: '#fff' }} >Share My Info</Text>
+        </Button>
         <Form>
           <Card>
               <CardItem header>
@@ -188,7 +191,7 @@ componentDidUpdate() {
               <Body>
                 <CustomDatePicker
                   handleDateChange={this.handleBirthdayUpdate}
-                  selectedDate={this.state.birthday}
+                  selectedDate={ moment(this.state.birthday, "MMMM Do YYYY").toDate() }
                   formattedDate={this.getFormattedBirthday(this.state.birthday)}
                 />
               </Body>
@@ -246,13 +249,10 @@ componentDidUpdate() {
               </Body>
             </CardItem>
           </Card>
-          <Button style={styles.button} info full onPress={this.handleSubmit}>
-            <Text style={{ color: '#333' }} >Save Profile</Text>
+          <Button style={styles.button} full onPress={this.handleSubmit}>
+            <Text style={{ color: '#fff' }} >Save Profile</Text>
           </Button>
           </Form>
-          <Button style={styles.button} info full onPress={this.onShare}>
-            <Text style={{ color: '#333' }} >Share My Info</Text>
-          </Button>
         </KeyboardAwareScrollView>
     );
   }
@@ -278,7 +278,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen)
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "transparent"
+    backgroundColor: '#3F51B5'
   },
   container: {
     flex: 1,

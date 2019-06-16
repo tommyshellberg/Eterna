@@ -123,7 +123,7 @@ class RegisterForm extends React.Component {
 }
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: "transparent"
+        backgroundColor: "#3F51B5"
     },
     errorText: {
         fontSize: 20,

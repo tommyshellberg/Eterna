@@ -65,7 +65,7 @@ class ResetForm extends React.Component {
 }
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: "transparent"
+        backgroundColor: "#3F51B5"
     },
 
     errorText: {

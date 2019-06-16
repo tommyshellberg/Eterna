@@ -125,11 +125,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: '#fff'
+        //backgroundColor: '#fff'
     },
     button: {
         marginTop: 20,
-        backgroundColor: "transparent"
+        backgroundColor: "#3F51B5"
     },
     bgImage: {
         width: '100%', 
