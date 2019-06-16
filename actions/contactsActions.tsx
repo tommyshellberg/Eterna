@@ -48,11 +48,10 @@ export const addNewContact = ( contact:Contact, userId ) => ({
  * @param string userId
  * @param string contactId
 */
-export const deleteContact = ( contactId, userId ) => ({
+export const deleteContact = ( contactId ) => ({
     type: 'DELETE_CONTACT',
     payload: {
-        contactId,
-        userId
+        contactId
     }
 })
 
@@ -61,12 +60,10 @@ export const deleteContact = ( contactId, userId ) => ({
  * @param string contactId - the contactID stored in Firebase for this contact
  * @param string userId - the logged-in user's Firebase id
 */
-export const updateContact = ( contact:Contact, contactId, userId ) => ({
+export const updateContact = ( contact:Contact ) => ({
     type: 'UPDATE_CONTACT',
     payload: {
-        contact,
-        contactId,
-        userId
+        contact
     }
 })
 

@@ -14,7 +14,7 @@ import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { getContacts, setUserId, updateContacts, getDbRef } from '../actions/contactsActions'
+import { getContacts, setUserId, updateContacts, getDbRef, updateProfile } from '../actions/contactsActions'
 
 interface Props {
   navigation: any
@@ -60,8 +60,10 @@ class HomeScreen extends React.Component<Props, State> {
     const { dbRef } = this.props
     const { userId } = this.props
     const contactsRef =  dbRef.ref(`users/${userId}/contacts`)
+    const meRef = dbRef.ref(`users/${userId}/me`)
 
     // @todo - fix a loop of details being added.
+    /*
     if( !init && prevProps.contacts !== this.props.contacts ) {
       console.log('props have updated')
       // @todo - I think I have to convert contacts[] to contacts{} to send to FB.
@@ -71,8 +73,13 @@ class HomeScreen extends React.Component<Props, State> {
       console.log(contacts)
       contactsRef.set(contacts)
     }
+    */
 
     if( init && dbRef && userId ) {
+
+      meRef.on('value', snapshot => {
+        this.props.updateProfile(snapshot)
+      })
       let contacts
       contactsRef.on('value', snapshot => {
         contacts = []
@@ -84,7 +91,7 @@ class HomeScreen extends React.Component<Props, State> {
             console.log(child.val().details)
             contacts.push({
               id: child.key,
-              details: child.val().details
+              details: child.val()
             })
           })
           if (init) init = false
@@ -113,8 +120,6 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   renderListItem = (contact) => {
-    console.log('the contact inside of renderlistitem: ')
-    console.log(contact)
     return (
       <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact, userId: this.props.userId } )} >
         <Text>{`${contact.details.firstName} ${contact.details.lastName}`}</Text>
@@ -189,7 +194,8 @@ const mapDispatchToProps = dispatch => (
     getContacts,
     setUserId,
     updateContacts,
-    getDbRef
+    getDbRef,
+    updateProfile
   }, dispatch)
 );
 

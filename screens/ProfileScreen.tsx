@@ -14,11 +14,12 @@ import CustomDatePicker from '../components/DatePicker'
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { updateContact } from '../actions/contactsActions'
+import { updateContact, deleteContact } from '../actions/contactsActions'
 
 interface Props {
   // is navigation an object?
   navigation: any
+  userId: string
 }
 interface State {
   firstName: string,
@@ -34,7 +35,6 @@ class ProfileScreen extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     userId = this.props.navigation.state.params.userId
-    db = firebase.database();
   }
 
   state: State = {
@@ -56,10 +56,10 @@ class ProfileScreen extends React.Component<Props, State> {
       headerRight: (
         <View>
           <Button style={styles.button} danger onPress={ () => {
-            db.ref(`users/${userId}/contacts/${navigation.state.params.contact.id}`)
-            .remove()
-            .then( () => alert('deleted!') )
-            .catch( () => alert('failed to delete!') )
+            // @todo - call delete contact action instead of direct db call.
+            const contactId = navigation.state.params.contact.id
+            const deleteContact = navigation.getParam('deleteContact')
+            deleteContact(contactId)
             navigation.navigate('Home')
             } }>
             <Text style={{color: "red"}}>Delete</Text>
@@ -70,6 +70,11 @@ class ProfileScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
+    console.log('this.props.navigation on the Profile Screen:')
+    console.log(this.props.navigation)
+    this.props.navigation.setParams({ 
+      deleteContact: this.props.deleteContact,
+    });
   }
 
   handleTextUpdate = (text, prop) => {
@@ -77,11 +82,13 @@ class ProfileScreen extends React.Component<Props, State> {
   }
 
   handleStateUpdate = debounce( () => {
-    this.props.updateContact( null, null, null )
-    db.ref(`users/${userId}/contacts/${this.props.navigation.getParam('id')}`)
-    .set(this.state)
-    .then( () => alert('successfully updated'))
-    .catch ( (error) => alert('failed to update record!'))
+    const id = this.props.navigation.state.params.contact.id
+    const contact = { 
+      details: this.state,
+      id
+    }
+    this.props.updateContact( contact, this.props.userId )
+    
   }, 1000)
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -234,14 +241,14 @@ class ProfileScreen extends React.Component<Props, State> {
 
 // @todo - we don't need all contacts, just THIS contact and the userId for updating.
 const mapStateToProps = (state) => {
-  const { contacts } = state
   const { userId } = state
-  return { contacts, userId }
+  return { userId }
 }
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
-    updateContact
+    updateContact,
+    deleteContact
   }, dispatch)
 );
 

@@ -116,12 +116,8 @@ class AddContactScreen extends React.Component<Props, State> {
   }, 500)
 
   componentDidMount() {
-    console.log('here are the props available on the add contact screen:')
-    console.log(this.props)
   }
 
-  // @todo - copy this code into the contactsReducer.tsx file within the addNewContact() function.
-  // @todo - we will trigger submission using the addNewContact dispatch action.
   handleFormSubmit = () => {
       // When the button is submitted, add a new record. 
       // Keep in mind the format we use, { id: id, details: this.state }    

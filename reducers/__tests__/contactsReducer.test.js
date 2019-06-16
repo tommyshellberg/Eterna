@@ -43,7 +43,8 @@ describe('Test UPDATE_CONTACTS in contactsReducer', () => {
     const expectedState = {
       contacts: [],
       userId: '',
-      dbRef: null
+      dbRef: null,
+      me: {}
   }
   const newState = contactsReducer( null, action )
   expect(newState).toEqual(expectedState)
@@ -207,39 +208,6 @@ describe('Test DELETE_CONTACT in contactsReducer', () => {
   //constants for all DELETE_CONTACT tests
   const type = 'DELETE_CONTACT'
   const userId = 'userId'
-
-  it('should return original state if userId is falsy', () => {
-    const dbRef = null
-    const userId = null
-    const contacts = [{
-      details: {
-        address: "new address",
-        birthday: "2019-05-26T00:00:00+02:00",
-        email: "tom@tom.blog",
-        firstName: "Tom",
-        lastName: "Tomson",
-        phone: "45805555555",
-      },
-      id: "1234",
-    }]
-    const state = {
-      contacts,
-      userId,
-      dbRef
-    }
-    const expectedState = {
-      contacts,
-      userId,
-      dbRef
-    }
-    const contactId = '1234'
-    const payload = { contactId, userId }
-    const action = { type, payload }
-
-    const newState = contactsReducer( state, action )
-    expect(newState).toEqual(expectedState)
-  })
-
   it('should return original state if payload is falsy', () => {
     const dbRef = null
     const userId = null
@@ -296,7 +264,7 @@ describe('Test DELETE_CONTACT in contactsReducer', () => {
     }
 
     const contactId = '1234'
-    const payload = { contactId, userId }
+    const payload = { contactId }
     const action = { type, payload }
 
     const newState = contactsReducer( state, action )
@@ -511,6 +479,53 @@ describe('Test UPDATE_PROFILE in contactsReducer', () => {
     const action = { type, payload }
   
     const newState = contactsReducer( state, action )
+    expect(newState).toEqual(expectedState)
+  })
+})
+
+describe('Test UPDATE_CONTACT in contactsReducer', () => {
+  const type = "UPDATE_CONTACT"
+  const oldContact = {
+    details: {
+      address: "old address",
+      birthday: "2019-05-26T00:00:00+02:00",
+      email: "tom@tom.blog",
+      firstName: "Tom",
+      lastName: "Tomson",
+      phone: "45805555555",
+    },
+    id: 1
+  }
+  const state = {
+    contacts: [ oldContact ],
+    userId: '1234',
+    dbRef: null
+  }
+  it('should return new contact info when updating', () => {
+    const newContact = {
+      details: {
+        address: "new address",
+        birthday: "2019-05-26T00:00:00+02:00",
+        email: "tom@tom.blog",
+        firstName: "Tom",
+        lastName: "Tomson",
+        phone: "45805555555",
+      },
+      id: 1
+    }
+    const payload = {
+      contact: newContact
+    }
+    const action = {
+      type,
+      payload
+    }
+    const expectedState = {
+      contacts: [ newContact ],
+      userId: '1234',
+      dbRef: null
+    }
+    const newState = contactsReducer(state, action)
     expect(newState).toEqual(expectedState)
   })
 })

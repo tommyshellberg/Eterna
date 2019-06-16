@@ -16,7 +16,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { updateProfile, getProfileData } from '../actions/contactsActions'
 
-interface Props {}
+interface Props {
+  me: object
+}
 
 // @todo - remove loading from internal state and load from this.props
 interface State {
@@ -33,15 +35,16 @@ class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
+
   }
 
   state: State = {
-    firstName: '',
-    lastName: '',
-    birthday:  new Date(),
-    phone: '',
-    email: '',
-    address: '',
+    firstName: this.props.me.firstName || '',
+    lastName: this.props.me.lastName || '',
+    birthday:  this.props.me.birthday || new Date(),
+    phone: this.props.me.phone || '',
+    email: this.props.me.email || '',
+    address: this.props.me.address || '',
     loading: false
   }
 
@@ -51,14 +54,7 @@ class ProfileScreen extends React.Component<Props, State> {
       title: 'My Profile',
       headerRight: (
         <View>
-          <Button transparent onPress={() => {
-            firebase.auth().signOut()
-              .then ( () => {
-                alert('Signed out!')
-              })
-              .catch( (error) => alert(error))
-            }}
-            >
+          <Button transparent onPress={navigation.getParam('logOut')} >
             <Text style={{color: "#333"}}>Logout</Text>
           </Button>
         </View>
@@ -66,17 +62,32 @@ class ProfileScreen extends React.Component<Props, State> {
     }
 }
 
+logOut = () => {
+  firebase.auth().signOut()
+  .then ( () => {
+    alert('Signed out!')
+  })
+  .catch( (error) => alert(error))
+}
+
 componentDidMount() {
-  console.log('calling getProfileData action within componentDidMount')
-  this.props.getProfileData( this.props.userId )
+  this.props.navigation.setParams({ logOut: this.logOut });
   console.log('this is the me property of props')
-  console.log(this.props.me)
-  // here we want to grab the cached data. 
-  // call the .on() method with an if statement.
-  // we only update state from within the .on() method if the object from cached data DOES NOT equal the object created from the .on() method 
-  // in other words, if the cached data is stale.
-  // in the future this could be a problem. if you lose connectivity after updating something the cache might update but not the db.
-  // in that case the cache is the correct source of truth.
+  console.log( this.props.me )
+  this.setState({
+    firstName: this.props.me.firstName,
+    lastName: this.props.me.lastName,
+    birthday:  this.props.me.birthday,
+    phone: this.props.me.phone,
+    email: this.props.me.email,
+    address: this.props.me.address,
+    loading: false
+  })
+  console.log('this is statewithin My profile')
+  console.log( this.state )
+}
+
+componentDidUpdate() {
 }
 
 // @todo - this should be loaded from cache initially if possible.
@@ -87,7 +98,8 @@ componentDidMount() {
     this.setState({[prop]: text}) 
   }
 
-  handleStateUpdate = debounce( () => {
+  handleSubmit = () => {
+    console.log('calling handleSubmit')
     // @todo - pass in the proper information to updateProfile()
     const contactInfo = {
       firstName: this.state.firstName,
@@ -98,13 +110,7 @@ componentDidMount() {
       address: this.state.address
     }
 
-    this.props.updateProfile( contactInfo, this.props.userId )
-  }, 1000)
-
-  componentDidUpdate = (prevProps, prevState) => {
-    if ( prevState !== this.state ) {
-      this.handleStateUpdate()
-    }
+    this.props.updateProfile( contactInfo )
   }
 
   getFormattedBirthday = (date) => {
@@ -245,6 +251,9 @@ componentDidMount() {
               </Body>
             </CardItem>
           </Card>
+          <Button style={styles.button} info full onPress={this.handleSubmit}>
+            <Text style={{ color: '#333' }} >Save Profile</Text>
+          </Button>
           </Form>
           <Button style={styles.button} info full onPress={this.onShare}>
             <Text style={{ color: '#333' }} >Share My Info</Text>
@@ -257,11 +266,9 @@ componentDidMount() {
 // @todo - we don't need all contacts here. state should just be our own data + userId
 // @todo - after we clean up the state object(get rid of the extra contacts property within it) clean this up.
 const mapStateToProps = (state) => {
-  console.log('this is the state within My Profile which gets passed to props')
-  console.log(state)
-  const userId = state.contacts.userId
-  const me = state.contacts.me
-  const loading = state.contacts.loading
+  const {userId} = state
+  const {me} = state
+  const {loading} = state
   return { userId, me, loading }
 }
 

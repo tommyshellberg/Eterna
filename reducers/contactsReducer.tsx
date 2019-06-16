@@ -19,7 +19,8 @@ export function getDbRef () {
 interface State {
     contacts: Array<object>,
     userId: string,
-    dbRef: any
+    dbRef: any,
+    me: object
 }
 
 interface Action {
@@ -30,7 +31,8 @@ interface Action {
 const INITIAL_STATE = {
     contacts: [],
     userId: '',
-    dbRef: null
+    dbRef: null,
+    me: {}
 }
 
 // init local cache
@@ -99,14 +101,17 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
         return { ...state, upcomingBirthdays }
 
         case 'UPDATE_CONTACT':
-            updateContact(null, null, null)
-        // @todo - we don't want to override the existing contacts[] array.
-        // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
-        return { ...state,  }
+            const updateIndex = state.contacts.findIndex( (x) => x.id === action.payload.contact.id )
+            const removedContact = [ 
+                    ...state.contacts.slice( 0, updateIndex ),
+                    ...state.contacts.slice( updateIndex + 1 ) 
+                ]
+            const reAddContact = [...removedContact, action.payload.contact]
+        return { ...state, contacts: reAddContact }
 
         case 'DELETE_CONTACT':
         // @todo - we might need a better way to do this if findIndex() is too slow to find the index based on the ID
-        if ( !action.payload || !action.payload.userId || !action.payload.contactId) return state
+        if ( !action.payload || !action.payload.contactId) return state
         const deleteContact = () => {
             const contacts = state.contacts
             const index = contacts.findIndex( (x) => x.id === action.payload.contactId )
@@ -128,7 +133,10 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
         return { ...state }
 
         case 'UPDATE_PROFILE':
+        console.log('calling UPDATE_PROFILE')
         if ( !action.payload || !action.payload.me ) return state
+        console.log('UPDATE_PROFILE payload is:')
+        console.log(action.payload.me)
         return { ...state, me: action.payload.me }
 
         default:
