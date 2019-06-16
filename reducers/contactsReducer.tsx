@@ -128,11 +128,13 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
             return { ...state, contacts: deleteContact() }
 
         case 'GET_PROFILE_DATA':
+        if ( !action.payload || !action.payload.userId ) return state
+        const myProfileData = getProfileData( action.payload.userId )
         // we want to grab the profile data either from cache or from the database. 
         // then, return that profile data as part of new state.
         // the incoming payload is an object called 'me' which represents my profile data.
 
-        return { ...state }
+        return { ...state, me: myProfileData }
 
         case 'UPDATE_PROFILE':
         console.log('calling UPDATE_PROFILE')
@@ -227,7 +229,7 @@ const getProfileData = (userId) => {
     console.log('calling getProfileData function')
     let me = db.ref(`users/${userId}/me`)
     let obj = {}
-    me.on('value', (snapshot) => {
+    me.once('value', (snapshot) => {
       snapshot.forEach( (child) => {
         const key = child.key
         const val = child.val()

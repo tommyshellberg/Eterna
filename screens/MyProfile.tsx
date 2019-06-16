@@ -3,10 +3,8 @@ import { StyleSheet, Share, View } from 'react-native';
 import { Form, Card, CardItem, Text, Body, Textarea, Button, Spinner } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
-import { debounce } from 'lodash'
 import {firebase} from '@firebase/app'
 import '@firebase/auth'
-import '@firebase/database'
 
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
@@ -17,7 +15,10 @@ import { bindActionCreators } from 'redux';
 import { updateProfile, getProfileData } from '../actions/contactsActions'
 
 interface Props {
-  me: object
+  me: object,
+  getProfileData: Function,
+  updateProfile: Function,
+  userId: string
 }
 
 // @todo - remove loading from internal state and load from this.props
@@ -35,17 +36,17 @@ class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-
-  }
-
-  state: State = {
-    firstName: this.props.me.firstName || '',
-    lastName: this.props.me.lastName || '',
-    birthday:  this.props.me.birthday || new Date(),
-    phone: this.props.me.phone || '',
-    email: this.props.me.email || '',
-    address: this.props.me.address || '',
-    loading: false
+    console.log('constructor being called, this is props.me.address')
+    console.log(this.props.me.address)
+    this.state = {
+      firstName: this.props.me.firstName,
+      lastName: this.props.me.lastName,
+      birthday:  this.props.me.birthday,
+      phone: this.props.me.phone,
+      email: this.props.me.email,
+      address: this.props.me.address,
+      loading: false
+    }
   }
 
   static navigationOptions = ({navigation}) => {
@@ -70,24 +71,18 @@ logOut = () => {
   .catch( (error) => alert(error))
 }
 
-componentDidMount() {
+componentWillMount() {
+  console.log('componentWillMount is firing')
+  console.log('componentWillMount state')
+  console.log(this.state)
   this.props.navigation.setParams({ logOut: this.logOut });
   console.log('this is the me property of props')
   console.log( this.props.me )
-  this.setState({
-    firstName: this.props.me.firstName,
-    lastName: this.props.me.lastName,
-    birthday:  this.props.me.birthday,
-    phone: this.props.me.phone,
-    email: this.props.me.email,
-    address: this.props.me.address,
-    loading: false
-  })
-  console.log('this is statewithin My profile')
-  console.log( this.state )
 }
 
 componentDidUpdate() {
+  console.log('this is props.me within My profile')
+  console.log( this.props.me )
 }
 
 // @todo - this should be loaded from cache initially if possible.

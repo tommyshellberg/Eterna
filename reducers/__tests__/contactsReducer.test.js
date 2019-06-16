@@ -596,3 +596,33 @@ describe ( 'test birthday sorting', () => {
   } )
 
 } )
+
+describe( 'Test GET_PROFILE_DATA in contactsReducer', () => {
+  const type = 'GET_PROFILE_DATA'
+  it('should return an empty object if payload is empty', () => {
+    const payload = null
+    const action = {type, payload}
+    const state = {
+      contacts: [
+        {
+          details: {
+            address: "new address",
+            birthday: "2019-05-26T00:00:00+02:00",
+            email: "tom@tom.blog",
+            firstName: "Tom",
+            lastName: "Tomson",
+            phone: "45805555555",
+          },
+          id: 1
+        }
+      ],
+      userId: '1234',
+      dbRef: null,
+      me: {}
+    }
+
+    const expectedState = state
+    const newState = contactsReducer(state, action)
+    expect(newState).toEqual(expectedState)
+  })
+})
