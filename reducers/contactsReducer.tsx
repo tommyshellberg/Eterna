@@ -93,11 +93,13 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
                 }
 
         case 'SORT_BIRTHDAYS':
-            // @todo - check if state.contacts is actually correct!
-            // @performance - we don't want to override the existing contacts[] array. 
-            // make a new array and add it to state to not override previous contacts.
-            if ( !action.payload || !action.payload.contacts ) return console.log('shit is falsy')
+            console.log('SORT BIRTHDAYS FIRING')
+            // if we don't send any payload or contacts return state w/ empty upcomingBirthdays array
+            const emptyBirthdays = []
+            if ( !action.payload || !action.payload.contacts ) return { ...state, upcomingBirthdays: emptyBirthdays }
             const upcomingBirthdays = sortBirthdaysThirtyDays( action.payload.contacts )
+            console.log('upcomingBirthdays in SORT_BIRTHDAYS IS:')
+            console.log(upcomingBirthdays)
         return { ...state, upcomingBirthdays }
 
         case 'UPDATE_CONTACT':
