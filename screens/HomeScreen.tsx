@@ -29,7 +29,8 @@ interface Props {
   me: object
 }
 interface State {
-  loading: boolean
+  loading: boolean,
+  canSync: boolean
 }
 
 var init: boolean = true
@@ -41,7 +42,8 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   state: State = {
-    loading: true
+    loading: true,
+    canSync: false
   }
 
   static navigationOptions = ({navigation}) => {
@@ -58,8 +60,6 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   componentDidUpdate( prevProps, prevState ) {
-    console.log('me in HomeScreen:')
-    console.log(this.props.me)
 
     const { dbRef } = this.props
     const { userId } = this.props
@@ -86,6 +86,8 @@ class HomeScreen extends React.Component<Props, State> {
       let contacts
       contactsRef.on('value', snapshot => {
         contacts = []
+        console.log('this is the snapshot')
+        console.log(snapshot)
           snapshot.forEach( (child) => {
             // @todo - do we just use the key here like normal(loaded from FB)? Or use our own special key(index)?
             contacts.push({
@@ -114,6 +116,7 @@ class HomeScreen extends React.Component<Props, State> {
     this.props.setUserId(userId)
     this.props.getDbRef()
     this.props.getProfileData(userId)
+
 
     //this.props.getContacts(userId)
     // @todo - dispatch an action to get cached contacts
@@ -157,6 +160,23 @@ class HomeScreen extends React.Component<Props, State> {
     )
   }
 
+  syncContacts = () => {
+    // @todo - convert this.props.contacts to a new object tree which is ready to be saved to firebase using contactsRef.set
+    // @todo - perhaps dump the snapshot from the .on() method to see what it looks like.
+    // we need to also expand the details object as it is just being stored as an object.
+    // write a test for this.
+    console.log('calling syncContacts')
+    const contacts = this.props.contacts
+    console.log('converting contacts to object')
+    console.log(_.keyBy(contacts, 'id'))
+    /*
+    const contactsRef =  this.props.dbRef.ref(`users/${this.props.userId}/contacts`)
+    contactsRef.set(contacts)
+    .then(() => alert('success!'))
+    .catch(err => alert('error!'))
+    */
+  }
+
 
   _keyExtractor = (item, index) => {
     // @todo - the home page items loaded from FB have a different structure than items created from AddNewContact.
@@ -169,6 +189,9 @@ class HomeScreen extends React.Component<Props, State> {
     console.log('render() being fired')
     return (
         <View style={styles.container}>
+          <Button style={styles.button} full onPress={this.syncContacts} disabled={this.state.canSync}>
+            <Text style={{color:'#fff' }}>Sync Contacts</Text>
+          </Button>
           { this.state.loading && <Spinner/> }
           { !this.state.loading && this.props.contacts.length > 0 && 
             <FlatList 
@@ -211,7 +234,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen)
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "transparent"
+    backgroundColor: "#3F51B5"
   },
   container: {
     flex: 1,
