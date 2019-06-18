@@ -17,16 +17,12 @@ exports.stripHtmlFromObj = ( data:any ) => {
 
 exports.onContactWrite = functions.database.ref(`users/{uid}/contacts/{id}`).onWrite( (change, context) => {
     const data = change.after.val()
-    console.log('data is being updated')
-    console.log(data)
     const strippedData = stripHtmlFromObj(data)
     return change.after.ref.update(strippedData)
   })
 
   exports.onMeWrite = functions.database.ref(`users/{uid}/me`).onWrite( (change, context) => {
     const data = change.after.val()
-    console.log('data is being updated')
-    console.log(data)
     const strippedData = stripHtmlFromObj(data)
     return change.after.ref.update(strippedData)
   })

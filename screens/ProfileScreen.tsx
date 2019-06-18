@@ -70,8 +70,6 @@ class ProfileScreen extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log('this.props.navigation on the Profile Screen:')
-    console.log(this.props.navigation)
     this.props.navigation.setParams({ 
       deleteContact: this.props.deleteContact,
     });
@@ -229,7 +227,7 @@ class ProfileScreen extends React.Component<Props, State> {
         </Card>
         </Form>
         <Button style={styles.button} full info onPress={this.onShare}>
-          <Text style={{ color: '#333' }}>Share This Contact</Text>
+          <Text style={{ color: '#fff' }}>Share This Contact</Text>
         </Button>
       </KeyboardAwareScrollView>
     );

@@ -66,32 +66,12 @@ class HomeScreen extends React.Component<Props, State> {
     const contactsRef =  dbRef.ref(`users/${userId}/contacts`)
     const meRef = dbRef.ref(`users/${userId}/me`)
 
-    // @todo - we also need to think about the key provided to firebase(child.key like below).
-    // I don't think we can let firebase choose it if we send a whole object. gotta use our own.
-    /*
-    if( !init && prevProps.contacts !== this.props.contacts ) {
-      console.log('props have updated')
-      // @todo - I think I have to convert contacts[] to contacts{} to send to FB.
-      // either that or rework the whole app to use contacts{}
-      const { contacts } = this.props
-      console.log('contacts in componentDidUpdate:')
-      console.log(contacts)
-      contactsRef.set(contacts)
-    }
-    */
-
     if( init && dbRef && userId ) {
 
       let contacts
       contactsRef.on('value', snapshot => {
         contacts = []
-        console.log('this is the snapshot')
-        console.log(snapshot)
           snapshot.forEach( (child) => {
-            console.log('this is an individual child')
-            console.log(child)
-            console.log('this is an individual childs address')
-            console.log(child.val().address)
             // @todo - do we just use the key here like normal(loaded from FB)? Or use our own special key(index)?
             contacts.push({
               ...child.val(),
@@ -100,8 +80,6 @@ class HomeScreen extends React.Component<Props, State> {
           })
           if (init) init = false
           contacts = _.sortBy( contacts, [ (o) => o.firstName ] )
-          console.log('these are the contacts')
-          console.log(contacts)
           this.props.updateContacts(contacts)
           this.setState({
             loading: false
@@ -168,10 +146,7 @@ class HomeScreen extends React.Component<Props, State> {
     // @todo - convert this.props.contacts to a new object tree which is ready to be saved to firebase using contactsRef.set
     // @todo - perhaps dump the snapshot from the .on() method to see what it looks like.
     // write a test for this.
-    console.log('calling syncContacts')
     const contacts = this.props.contacts
-    console.log('converting contacts to object')
-    console.log(_.keyBy(contacts, 'id'))
 
     const contactsRef =  this.props.dbRef.ref(`users/${this.props.userId}/contacts`)
     contactsRef.set(contacts)
@@ -188,7 +163,6 @@ class HomeScreen extends React.Component<Props, State> {
   };
 
   render() {
-    console.log('render() being fired')
     return (
         <View style={styles.container}>
           <Button style={styles.button} full onPress={this.syncContacts} disabled={this.state.canSync}>

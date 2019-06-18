@@ -93,13 +93,11 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
                 }
 
         case 'SORT_BIRTHDAYS':
-            console.log('SORT BIRTHDAYS FIRING')
             // if we don't send any payload or contacts return state w/ empty upcomingBirthdays array
             const emptyBirthdays = []
             if ( !action.payload || !action.payload.contacts ) return { ...state, upcomingBirthdays: emptyBirthdays }
             const upcomingBirthdays = sortBirthdaysThirtyDays( action.payload.contacts )
-            console.log('upcomingBirthdays in SORT_BIRTHDAYS IS:')
-            console.log(upcomingBirthdays)
+
         return { ...state, upcomingBirthdays }
 
         case 'UPDATE_CONTACT':
@@ -137,10 +135,7 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
         return { ...state, me: myProfileData }
 
         case 'UPDATE_PROFILE':
-        console.log('calling UPDATE_PROFILE')
         if ( !action.payload || !action.payload.me ) return state
-        console.log('UPDATE_PROFILE payload is:')
-        console.log(action.payload.me)
         return { ...state, me: action.payload.me }
 
         default:
@@ -169,7 +164,6 @@ const getContactsFromDB = (userId) => {
 const sortBirthdaysThirtyDays = ( contacts ) => {
     const now = moment()
     const nextMonth = moment(now).add(1, 'M')
-    console.log(typeof(contacts))
     const filteredContactsArray = contacts
     .filter( (contact) => contact.birthday !== undefined )
     .map(contact => { 
@@ -185,48 +179,7 @@ const sortBirthdaysThirtyDays = ( contacts ) => {
    return sortedContacts
 }
 
-const addNewContact = async ( contact, userId ) => {
-    console.log('calling addNewContact reducer')
-    console.log('this is the contact object')
-    console.log(contact)
-    console.log('this is the userId')
-    console.log(userId)
-    const dbRef = db.ref(`users/${userId}/contacts`)
-    const contactRef = await dbRef.push()
-    contactRef.set(contact)
-        .then ( () => addNewContactToCache(contact) )
-        .catch( (err) => alert('error!'))
-    // @todo - this is where we have to do the firebase call to add a new item.
-}
-
-const deleteContact = ( contactId, userId ) => {
-    console.log('calling deleteContact reducer')
-    // @todo - copy from ProfileScreen.tsx within static navigationOptions.
-}
-
-const updateContact = ( contact, contactId, userId ) => {
-    console.log('calling updateContact reducer')
-    // @todo - copy from handleStateUpdate() in ProfileScreen.tsx.
-    // we still want to call the action within a debounced function 
-    // @performance - consider using a submit button instead of auto updating if it's smoother.
-}
-
-const updateProfile = ( contact, userId ) => {
-
-    console.log('calling updateProfile reducer')
-    db.ref(`users/${userId}/me`)
-    .set(contact)
-    .then( () => alert('updated!'))
-    .catch ( (error) => alert('failed to update record!'))
-    // @todo - copy from handleStateUpdate() in ProfileScreen.tsx.
-    // we still want to call the action within a debounced function 
-    // @performance - consider using a submit button instead of auto updating if it's smoother.
-}
-
-// @todo - we need to figure out how to get the initial profile data async using await as it may take a bit.
-
 const getProfileData = (userId) => {
-    console.log('calling getProfileData function')
     let me = db.ref(`users/${userId}/me`)
     let obj = {}
     me.once('value', (snapshot) => {
@@ -238,19 +191,4 @@ const getProfileData = (userId) => {
       // do we call updateProfile here and move the me.on() call to somewhere else?
     })
     return obj
-}
-
-const addNewContactToCache = ( contact ) => {
-    const contacts = getContactsFromCache()
-    console.log('contacts in addNewContactToCache')
-    console.log(typeof(contacts))
-    console.log(contacts)
-    const newContacts = Object.assign( {}, contacts, { contact } )
-    console.log('newContacts object:')
-    console.log(newContacts)
-    /* shellCache.setItem("contacts", newContacts, function(err) {
-        // key => contacts, value => this.state.contacts
-        if(err) console.log('error with setting cache')
-    })
-    */
 }

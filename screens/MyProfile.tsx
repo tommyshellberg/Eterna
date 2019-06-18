@@ -36,8 +36,6 @@ class ProfileScreen extends React.Component<Props, State> {
 
   constructor(props) {
     super(props)
-    console.log('constructor being called, this is props.me.address')
-    console.log(this.props.me.address)
     this.state = {
       firstName: this.props.me.firstName,
       lastName: this.props.me.lastName,
@@ -72,17 +70,10 @@ logOut = () => {
 }
 
 componentWillMount() {
-  console.log('componentWillMount is firing')
-  console.log('componentWillMount state')
-  console.log(this.state)
   this.props.navigation.setParams({ logOut: this.logOut });
-  console.log('this is the me property of props')
-  console.log( this.props.me )
 }
 
 componentDidUpdate() {
-  console.log('this is props.me within My profile')
-  console.log( this.props.me )
 }
 
 // @todo - this should be loaded from cache initially if possible.
@@ -94,7 +85,6 @@ componentDidUpdate() {
   }
 
   handleSubmit = () => {
-    console.log('calling handleSubmit')
     // @todo - pass in the proper information to updateProfile()
     const contactInfo = {
       firstName: this.state.firstName,

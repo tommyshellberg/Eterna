@@ -35,7 +35,6 @@ class BirthdayScreen extends React.Component<Props, State> {
   // @todo - if we add a new contact and come back to this screen it doesn't update. We gotta make sure it has updated contacts.
   componentWillUpdate( prevProps, prevState ) {
     if ( prevProps.contacts !== this.props.contacts ) {
-      console.log('prevProps doesnt match new props, updating')
       this.props.sortBirthdaysThirtyDays(this.props.contacts)
     }
   }
