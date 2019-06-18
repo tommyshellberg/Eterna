@@ -80,7 +80,7 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
             const oldContacts:Array<object> = state.contacts
             if( !action.payload ) return state
             const newContact = {
-                details: action.payload.contact,
+                ...action.payload.contact,
                 id: oldContacts.length + 1
             }
             // take in a single contact and a userId(for firebase auth purposes)
@@ -171,14 +171,14 @@ const sortBirthdaysThirtyDays = ( contacts ) => {
     const nextMonth = moment(now).add(1, 'M')
     console.log(typeof(contacts))
     const filteredContactsArray = contacts
-    .filter( (contact) => contact.details.birthday !== undefined )
+    .filter( (contact) => contact.birthday !== undefined )
     .map(contact => { 
-      contact.details.tempBirthday = moment(contact.details.birthday).year(now.year()).format()
+      contact.tempBirthday = moment(contact.birthday).year(now.year()).format()
       return contact
     })
     
     const isBetweenContacts = filteredContactsArray.filter( contact => 
-      moment(contact.details.tempBirthday).isBetween(now, nextMonth)
+      moment(contact.tempBirthday).isBetween(now, nextMonth)
     )
    const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
    sortedContacts.map( (x) => delete(x.tempBirthday))

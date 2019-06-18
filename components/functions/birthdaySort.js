@@ -6,14 +6,14 @@ const nextMonth = moment(now).add(1, 'M')
 
 const sortContacts = (contacts) => {
     const filteredContactsArray = contacts
-    .filter( (contact) => contact.details.birthday !== undefined )
+    .filter( (contact) => contact.birthday !== undefined )
     .map(contact => { 
-      contact.details.tempBirthday = moment(contact.details.birthday).year(now.year()).format()
+      contact.tempBirthday = moment(contact.birthday).year(now.year()).format()
       return contact
     })
     
     const isBetweenContacts = filteredContactsArray.filter( contact => 
-      moment(contact.details.tempBirthday).isBetween(now, nextMonth)
+      moment(contact.tempBirthday).isBetween(now, nextMonth)
     )
    const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
    return sortedContacts

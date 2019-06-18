@@ -8,7 +8,6 @@ interface Details {
 }
 
 interface Contact {
-    details: object,
     id: string
 }
 

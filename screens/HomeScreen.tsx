@@ -68,7 +68,6 @@ class HomeScreen extends React.Component<Props, State> {
 
     // @todo - we also need to think about the key provided to firebase(child.key like below).
     // I don't think we can let firebase choose it if we send a whole object. gotta use our own.
-    // @todo - fix a loop of details being added.
     /*
     if( !init && prevProps.contacts !== this.props.contacts ) {
       console.log('props have updated')
@@ -89,15 +88,20 @@ class HomeScreen extends React.Component<Props, State> {
         console.log('this is the snapshot')
         console.log(snapshot)
           snapshot.forEach( (child) => {
+            console.log('this is an individual child')
+            console.log(child)
+            console.log('this is an individual childs address')
+            console.log(child.val().address)
             // @todo - do we just use the key here like normal(loaded from FB)? Or use our own special key(index)?
             contacts.push({
-              id: child.key,
-              details: child.val()
+              ...child.val(),
+              id: child.key
             })
           })
           if (init) init = false
-          contacts = _.sortBy( contacts, [ (o) => o.details.firstName ] )
-
+          contacts = _.sortBy( contacts, [ (o) => o.firstName ] )
+          console.log('these are the contacts')
+          console.log(contacts)
           this.props.updateContacts(contacts)
           this.setState({
             loading: false
@@ -125,7 +129,7 @@ class HomeScreen extends React.Component<Props, State> {
   renderListItem = (contact) => {
     return (
       <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact, userId: this.props.userId } )} >
-        <Text>{`${contact.details.firstName} ${contact.details.lastName}`}</Text>
+        <Text>{`${contact.firstName} ${contact.lastName}`}</Text>
       </ListItem>
     )
   }
@@ -163,18 +167,16 @@ class HomeScreen extends React.Component<Props, State> {
   syncContacts = () => {
     // @todo - convert this.props.contacts to a new object tree which is ready to be saved to firebase using contactsRef.set
     // @todo - perhaps dump the snapshot from the .on() method to see what it looks like.
-    // we need to also expand the details object as it is just being stored as an object.
     // write a test for this.
     console.log('calling syncContacts')
     const contacts = this.props.contacts
     console.log('converting contacts to object')
     console.log(_.keyBy(contacts, 'id'))
-    /*
+
     const contactsRef =  this.props.dbRef.ref(`users/${this.props.userId}/contacts`)
     contactsRef.set(contacts)
     .then(() => alert('success!'))
     .catch(err => alert('error!'))
-    */
   }
 
 

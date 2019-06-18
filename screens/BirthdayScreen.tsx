@@ -41,7 +41,7 @@ class BirthdayScreen extends React.Component<Props, State> {
   }
 
   renderListItem(contact) {
-    const { firstName, lastName, birthday } = contact.details
+    const { firstName, lastName, birthday } = contact
     return (
       // @todo - just send contact or object with contact? { contact }?
       <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact } )}>

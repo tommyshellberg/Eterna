@@ -27,7 +27,8 @@ interface State {
   birthday: any,
   phone: string
   email: string
-  address: string
+  address: string,
+  id: string
 }
 
 class ProfileScreen extends React.Component<Props, State> {
@@ -38,14 +39,13 @@ class ProfileScreen extends React.Component<Props, State> {
   }
 
   state: State = {
-    
-    firstName: this.props.navigation.state.params.contact.details.firstName,
-    lastName: this.props.navigation.state.params.contact.details.lastName,
-    birthday: this.props.navigation.state.params.contact.details.birthday || new Date(),
-    phone: this.props.navigation.state.params.contact.details.phone,
-    email: this.props.navigation.state.params.contact.details.email,
-    address: this.props.navigation.state.params.contact.details.address
-    
+    firstName: this.props.navigation.state.params.contact.firstName,
+    lastName: this.props.navigation.state.params.contact.lastName,
+    birthday: this.props.navigation.state.params.contact.birthday || new Date(),
+    phone: this.props.navigation.state.params.contact.phone,
+    email: this.props.navigation.state.params.contact.email,
+    address: this.props.navigation.state.params.contact.address,
+    id: this.props.navigation.state.params.contact.id
   }
 
   // @todo - the logic should be copied and moved into contactsReducer.tsx within the deleteContact function.
@@ -83,10 +83,7 @@ class ProfileScreen extends React.Component<Props, State> {
 
   handleStateUpdate = debounce( () => {
     const id = this.props.navigation.state.params.contact.id
-    const contact = { 
-      details: this.state,
-      id
-    }
+    const contact = this.state
     this.props.updateContact( contact, this.props.userId )
     
   }, 1000)

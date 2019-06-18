@@ -120,12 +120,11 @@ class AddContactScreen extends React.Component<Props, State> {
 
   handleFormSubmit = () => {
       // When the button is submitted, add a new record. 
-      // Keep in mind the format we use, { id: id, details: this.state }    
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
     this.props.addNewContact( contactObj, this.props.userId )
     // @todo - send a message to the Home screen so we can show a modal that says "success!"
-    //this.props.navigation.navigate('Home')
+    this.props.navigation.navigate('Home')
   }
 
   getFormattedBirthday = (date) => {
