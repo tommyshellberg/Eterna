@@ -3,16 +3,14 @@ import moment from 'moment'
 
 const contactsWithSingleContact = [
   {
-      details: {
         address: "Jdjdjdjdbdjdidbdbdjdbbdis",
         birthday: "2019-05-26T00:00:00+02:00",
         email: "jim@jumson.com",
         firstName: "Jims",
         lastName: "Jimsons",
         phone: "45804563211",
-      },
-      id: 1,
-    },
+        id: 1
+      }
 ]
 
 describe('Test contactsReducer', () => {
@@ -115,14 +113,12 @@ describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
     const expectedState = {
       contacts: [
         {
-          details: {
-            address: "new address",
-            birthday: "2019-05-26T00:00:00+02:00",
-            email: "tom@tom.blog",
-            firstName: "Tom",
-            lastName: "Tomson",
-            phone: "45805555555",
-          },
+          address: "new address",
+          birthday: "2019-05-26T00:00:00+02:00",
+          email: "tom@tom.blog",
+          firstName: "Tom",
+          lastName: "Tomson",
+          phone: "45805555555",
           id: 1
         }
       ],
@@ -147,25 +143,21 @@ describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
     const action = { type, payload }
     newContacts = [
       {
-          details: {
-            address: "Jdjdjdjdbdjdidbdbdjdbbdis",
-            birthday: "2019-05-26T00:00:00+02:00",
-            email: "jim@jumson.com",
-            firstName: "Jims",
-            lastName: "Jimsons",
-            phone: "45804563211",
-          },
+          address: "Jdjdjdjdbdjdidbdbdjdbbdis",
+          birthday: "2019-05-26T00:00:00+02:00",
+          email: "jim@jumson.com",
+          firstName: "Jims",
+          lastName: "Jimsons",
+          phone: "45804563211",
           id: 1,
         },
         {
-          details: {
-            address: "new address",
-            birthday: "2019-05-26T00:00:00+02:00",
-            email: "tom@tom.blog",
-            firstName: "Tom",
-            lastName: "Tomson",
-            phone: "45805555555",
-          },
+          address: "new address",
+          birthday: "2019-05-26T00:00:00+02:00",
+          email: "tom@tom.blog",
+          firstName: "Tom",
+          lastName: "Tomson",
+          phone: "45805555555",
           id: 2,
         }
     ]

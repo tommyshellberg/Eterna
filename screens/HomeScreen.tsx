@@ -99,7 +99,6 @@ class HomeScreen extends React.Component<Props, State> {
     this.props.getDbRef()
     this.props.getProfileData(userId)
 
-
     //this.props.getContacts(userId)
     // @todo - dispatch an action to get cached contacts
   }
@@ -165,9 +164,11 @@ class HomeScreen extends React.Component<Props, State> {
   render() {
     return (
         <View style={styles.container}>
-          <Button style={styles.button} full onPress={this.syncContacts} disabled={this.state.canSync}>
-            <Text style={{color:'#fff' }}>Sync Contacts</Text>
+        { this.props.contacts.length > 0 && 
+          <Button style={styles.button} full onPress={this.syncContacts}>
+          <Text style={{color:'#fff' }}>Sync Contacts</Text>
           </Button>
+        }
           { this.state.loading && <Spinner/> }
           { !this.state.loading && this.props.contacts.length > 0 && 
             <FlatList 

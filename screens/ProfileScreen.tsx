@@ -4,9 +4,6 @@ import { Form, Card, CardItem, Text, Body, Textarea, Button } from 'native-base'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import moment from 'moment'
 import { debounce } from 'lodash'
-import {firebase} from '@firebase/app'
-import '@firebase/auth'
-import '@firebase/database'
 
 import TextInput from '../components/fixedLabel'
 import CustomDatePicker from '../components/DatePicker'
@@ -73,6 +70,7 @@ class ProfileScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ 
       deleteContact: this.props.deleteContact,
     });
+    console.log(this.state.birthday)
   }
 
   handleTextUpdate = (text, prop) => {
