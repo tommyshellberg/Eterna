@@ -78,7 +78,7 @@ class LoginForm extends React.Component {
                         <Item fixedLabel error={ this.state.email.length >0 && !this.state.isValidEmail } success={ this.state.email.length >0 && this.state.isValidEmail} >
                             <Label>Email</Label>
                             <Input
-                                placeholder=""
+                                placeholder="name@email.com"
                                 value={this.state.email}
                                 onChangeText={email => this.onEmailChange(email)}
                                 secure={false}
@@ -129,7 +129,8 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20,
-        backgroundColor: "#3F51B5"
+        backgroundColor: "#3F51B5",
+        color: '#fff'
     },
     bgImage: {
         width: '100%', 

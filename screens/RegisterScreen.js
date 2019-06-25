@@ -39,8 +39,6 @@ class RegisterForm extends React.Component {
     }
 
     componentDidUpdate () {
-        // TODO: make more performant by comparing prevState and new state.
-        // TODO: put validation in here.
         const {isValidEmail, isValidPassword, disableSubmit } = this.state
         if ( disableSubmit && isValidEmail && isValidPassword ) {
             this.setState({disableSubmit: false})
@@ -68,8 +66,10 @@ class RegisterForm extends React.Component {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then( () => {
                 alert('Successfully registered!')
-                this.setState({loading: false})
-                this.props.navigation.navigate( 'Login', { email: this.state.email })
+                })
+                .then ( () => {
+                    this.props.navigation.navigate( 'Login')
+                    this.setState({loading: false})
                 })
             .catch( (error) => {
                 alert(error)
