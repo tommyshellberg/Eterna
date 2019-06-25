@@ -11,6 +11,9 @@ import {contactsReducer, getDbRef } from './reducers/contactsReducer'
 // React Navigation stuff
 import AppNavigator from './navigation/AppNavigator';
 
+// Import Firebase Config
+import { config } from './config/'
+
 interface State {
   isLoadingComplete: boolean
 }
@@ -25,14 +28,6 @@ export default class App extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    const config = {
-      apiKey: "AIzaSyBfPgnFti35J4GQDUTU_Yf9_wSM9-d-lQs",
-      authDomain: "shellcrm-48104.firebaseapp.com",
-      databaseURL: "https://shellcrm-48104.firebaseio.com",
-      projectId: "shellcrm-48104",
-      storageBucket: "shellcrm-48104.appspot.com",
-      messagingSenderId: "812296684473"
-    }
     if(!firebase.apps.length) {
       firebase.initializeApp(config)
       getDbRef()
