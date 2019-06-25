@@ -24,8 +24,6 @@ describe('Test contactsReducer', () => {
       userId: 'userId',
       dbRef: null
     }
-    //@todo - is this the wrong way to do this assignment? Are we just setting expectedState to a reference of state?
-    // this could cause problems with equality testing.
     const expectedState = state
     const newState = contactsReducer(state, action)
     expect(newState).toEqual(expectedState)
@@ -84,7 +82,6 @@ describe('Test UPDATE_CONTACTS in contactsReducer', () => {
 
 describe('Test ADD_NEW_CONTACT in contactsReducer', () => {
 
-  // @todo - should probably add actions to a constants file now.
   const type='ADD_NEW_CONTACT'
   const newContact = {
       address: "new address",

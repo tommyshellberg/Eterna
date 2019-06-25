@@ -45,15 +45,12 @@ class ProfileScreen extends React.Component<Props, State> {
     id: this.props.navigation.state.params.contact.id
   }
 
-  // @todo - the logic should be copied and moved into contactsReducer.tsx within the deleteContact function.
-  // we will instead call the deleteContact action in contactsActions.tsx
   static navigationOptions = ({navigation}) => {
     return {
       title: 'Profile',
       headerRight: (
         <View>
           <Button style={{ backgroundColor: 'transparent' }} transparent onPress={ () => {
-            // @todo - call delete contact action instead of direct db call.
             const contactId = navigation.state.params.contact.id
             const deleteContact = navigation.getParam('deleteContact')
             deleteContact(contactId)
@@ -70,7 +67,6 @@ class ProfileScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({ 
       deleteContact: this.props.deleteContact,
     });
-    console.log(this.state.birthday)
   }
 
   handleTextUpdate = (text, prop) => {
@@ -101,10 +97,8 @@ class ProfileScreen extends React.Component<Props, State> {
   onShare = async () => {
     try {
       const shareState = this.state
-      // TODO: birthday is of type Date but moment.format() returns string. what to do here?
       shareState.birthday = moment(this.state.birthday).format("MMMM Do YYYY")
       const result = await Share.share({
-        // TODO: Prettyify or leave as JSON to allow importing?
 
         message: JSON.stringify(this.state),
         title: `Contact information for ${this.state.firstName} ${this.state.lastName}`
@@ -232,7 +226,6 @@ class ProfileScreen extends React.Component<Props, State> {
   }
 }
 
-// @todo - we don't need all contacts, just THIS contact and the userId for updating.
 const mapStateToProps = (state) => {
   const { userId } = state
   return { userId }

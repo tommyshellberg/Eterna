@@ -21,11 +21,6 @@ export default class CustomDatePicker extends Component<Props, State> {
     this.setState({ chosenDate: newDate });
   }
 
-  componentDidMount() {
-    console.log('selected date in datepicker:')
-    console.log(this.props.selectedDate)
-  }
-
   componentDidUpdate( prevProps: Props, prevState: State ) {
       // compare old and prev state, if date is changed, call the callback
       if ( prevState.chosenDate !== this.state.chosenDate ) {

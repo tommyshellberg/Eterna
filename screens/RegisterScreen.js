@@ -75,8 +75,6 @@ class RegisterForm extends React.Component {
                 alert(error)
                 this.setState({loading: false})
             })
-        // if successful we should also redirect to the Login page afterward. since it's going to be part of the same stack you can use this.props.navigation.
-        // Don't forget to set this.state.loading to true while doing actions. Inside of the then() function calls set loading to false
     }
 
     render() {

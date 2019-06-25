@@ -80,8 +80,6 @@ class AddContactScreen extends React.Component<Props, State> {
   }
 
   componentDidUpdate () {
-      // TODO: make more performant by comparing prevState and new state.
-      // TODO: put validation in here.
       const {isValidfirstName, isValidlastName, isValidphone, isValidemail, isValidaddress, disableSubmit } = this.state
       if ( disableSubmit && isValidfirstName && isValidlastName && isValidphone && isValidemail && isValidaddress) {
           this.setState({disableSubmit: false})
@@ -119,11 +117,9 @@ class AddContactScreen extends React.Component<Props, State> {
   }
 
   handleFormSubmit = () => {
-      // When the button is submitted, add a new record. 
     const {birthday, address, phone, firstName, lastName, email} = this.state
     let contactObj = { birthday, address, phone, firstName, lastName, email}
     this.props.addNewContact( contactObj, this.props.userId )
-    // @todo - send a message to the Home screen so we can show a modal that says "success!"
     this.props.navigation.navigate('Home')
   }
 
@@ -272,7 +268,6 @@ class AddContactScreen extends React.Component<Props, State> {
   }
 }
 
-// @todo - we don't need the full contacts list here. just the FB userId
 const mapStateToProps = (state) => {
   const { userId } = state
   return { userId }

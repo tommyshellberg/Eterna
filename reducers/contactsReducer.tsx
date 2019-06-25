@@ -1,7 +1,3 @@
-import { combineReducers } from 'redux'
-import { Cache } from "react-native-cache";
-import { AsyncStorage } from 'react-native';
-
 import moment from 'moment'
 import _ from 'lodash'
 
@@ -35,15 +31,6 @@ const INITIAL_STATE = {
     me: {}
 }
 
-// init local cache
-const shellCache = new Cache({
-    namespace: "shellCRM",
-    policy: {
-        maxEntries: 50000
-    },
-    backend: AsyncStorage
-})
-
 export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
     switch(action.type) {
 
@@ -56,10 +43,7 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
         } )
         
         case 'GET_CONTACTS':
-            // @todo - this should only retrieve cached contacts.
-            //const cachedContacts = getContactsFromCache()
-            let contacts:Array<object> = getContactsFromDB( action.payload.userId )
-
+            // implement caching later
             return Object.assign( {}, state, {
                 contacts
             } )
@@ -75,7 +59,6 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
             })
 
         case 'ADD_NEW_CONTACT':
-            // @todo - we want to add the new object to the state.contacts array.
 
             const oldContacts:Array<object> = state.contacts
             if( !action.payload ) return state
@@ -83,17 +66,12 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
                 ...action.payload.contact,
                 id: oldContacts.length + 1
             }
-            // take in a single contact and a userId(for firebase auth purposes)
-            // @todo: existing plan - add the contact to state regardless of response from addNewContact().
-            // this means we figure out a way to handle out of sync local cache and db data.
-            //addNewContact(action.payload.contact, action.payload.userId)
         return { ...state, 
                     contacts: [...oldContacts, newContact], 
                     userId: action.payload.userId 
                 }
 
         case 'SORT_BIRTHDAYS':
-            // if we don't send any payload or contacts return state w/ empty upcomingBirthdays array
             const emptyBirthdays = []
             if ( !action.payload || !action.payload.contacts ) return { ...state, upcomingBirthdays: emptyBirthdays }
             const upcomingBirthdays = sortBirthdaysThirtyDays( action.payload.contacts )
@@ -110,7 +88,6 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
         return { ...state, contacts: reAddContact }
 
         case 'DELETE_CONTACT':
-        // @todo - we might need a better way to do this if findIndex() is too slow to find the index based on the ID
         if ( !action.payload || !action.payload.contactId) return state
         const deleteContact = () => {
             const contacts = state.contacts
@@ -121,17 +98,11 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
             ]
             return newContacts
         }
-        // @todo - we don't want to override the existing contacts[] array.
-        // @todo - we just want to overwrite the relevant object within the contacts[] array and return back state.
             return { ...state, contacts: deleteContact() }
 
         case 'GET_PROFILE_DATA':
         if ( !action.payload || !action.payload.userId ) return state
         const myProfileData = getProfileData( action.payload.userId )
-        // we want to grab the profile data either from cache or from the database. 
-        // then, return that profile data as part of new state.
-        // the incoming payload is an object called 'me' which represents my profile data.
-
         return { ...state, me: myProfileData }
 
         case 'UPDATE_PROFILE':
@@ -143,26 +114,11 @@ export function contactsReducer ( state:State=INITIAL_STATE, action:Action ) {
     }
 }
 
-const getContactsFromCache = () => {
-    const contacts = shellCache.getItem( "contacts", (err, entries) => {
-
-        if(err) return console.log('there is an error')
-        return entries
-    })
-    return contacts
-}
-
-const getContactsFromDB = (userId) => {
-
-}
-
 // take a list of total contacts and filter by birthdays within next 30 days.
 // @param array contacts
 // return array sortedContacts
-// @todo rework this without mutating the contacts object. No more tempbirthday!
 
 const sortBirthdaysThirtyDays = ( contacts ) => {
-    console.log('calling sortbirthdays function')
     const now = moment()
     const nextMonth = moment(now).add(1, 'M')
     const filteredContactsArray = contacts
@@ -188,7 +144,6 @@ const getProfileData = (userId) => {
         const val = child.val()
         obj[key] = val
       })
-      // do we call updateProfile here and move the me.on() call to somewhere else?
     })
     return obj
 }

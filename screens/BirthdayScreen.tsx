@@ -25,7 +25,6 @@ class BirthdayScreen extends React.Component<Props, State> {
   renderListItem = (contact) => {
     const { firstName, lastName, birthday } = contact
     return (
-      // @todo - just send contact or object with contact? { contact }?
       <ListItem onPress={() =>this.props.navigation.navigate('Profile', { contact } )}>
         <Text>{`${firstName} ${lastName} - ${this.getFormattedBirthday(birthday)}`}</Text>
       </ListItem>     
@@ -63,7 +62,6 @@ class BirthdayScreen extends React.Component<Props, State> {
   }
 }
 
-// @todo - do we have all of the items from state we need?
 const mapStateToProps = (state) => {
   const { contacts } = state
   const { upcomingBirthdays } = state

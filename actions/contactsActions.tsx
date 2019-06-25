@@ -36,7 +36,6 @@ export const sortBirthdaysThirtyDays = ( contacts ) => ({
 /* take in the object representing a new contact and create a new one
  * @param object contact
  * @param string userId
- * @todo - figure out structure of the payload, a new object with contact and userId, right? 
 */
 export const addNewContact = ( contact:Contact, userId ) => ({
     type: 'ADD_NEW_CONTACT',
@@ -90,8 +89,3 @@ export const getProfileData = ( userId ) => ({
         userId
     }
 })
-
-// @todo - where do we tell the app to subscribe to our firebase db changes using .on()? 
-// remember that .on() will pull the contacts from the db when initially called so it can't be just be done within a normal lifecycle method.
-// If it's done within a normal lifecycle method it will render loading from cache useless.
-// do we compare the contacts within the .on() method to cached and skip updating state if they're equal?

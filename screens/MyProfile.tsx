@@ -21,7 +21,6 @@ interface Props {
   userId: string
 }
 
-// @todo - remove loading from internal state and load from this.props
 interface State {
   firstName: string,
   lastName: string,
@@ -73,19 +72,11 @@ componentWillMount() {
   this.props.navigation.setParams({ logOut: this.logOut });
 }
 
-componentDidUpdate() {
-}
-
-// @todo - this should be loaded from cache initially if possible.
-// We then need to figure out how to use the .on() method without needing to overwrite the data or update state unnecessarily.
-// actually, we don't need the .on() method at all. we don't need to listen for changes as we control how changes are made.
-
   handleTextUpdate = (text, prop) => {
     this.setState({[prop]: text}) 
   }
 
   handleSubmit = () => {
-    // @todo - pass in the proper information to updateProfile()
     const contactInfo = {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
@@ -111,8 +102,6 @@ componentDidUpdate() {
       const shareState = this.state
       shareState.birthday = moment(this.state.birthday).format("MMMM Do YYYY")
       const result = await Share.share({
-        // TODO: Prettyify or leave as JSON to allow importing?
-        //
 
         message: JSON.stringify(this.state),
         title: `Contact information for ${this.state.firstName} ${this.state.lastName}`
@@ -139,7 +128,6 @@ componentDidUpdate() {
     return (
       <KeyboardAwareScrollView extraScrollHeight={100} enableOnAndroid={true} keyboardShouldPersistTaps='handled'>
         { 
-          // @todo - change to this.props.loading
           this.state.loading && <Spinner/>
         }
         <Button style={styles.button} full onPress={this.onShare}>
@@ -248,8 +236,6 @@ componentDidUpdate() {
   }
 }
 
-// @todo - we don't need all contacts here. state should just be our own data + userId
-// @todo - after we clean up the state object(get rid of the extra contacts property within it) clean this up.
 const mapStateToProps = (state) => {
   const {userId} = state
   const {me} = state
