@@ -526,44 +526,37 @@ describe ( 'test birthday sorting', () => {
 
   const type = 'SORT_BIRTHDAYS'
 
-  // @todo - we cannot hardcode the birthdays here or else our tests will fail after a given time.
   const now = moment()
   const upcomingBirthday = moment(now).add(1, 'week').toString()
   const twoMonthsFromNow = moment(now).add(2, 'M').toString()
   const contactsOneUpcomingBirthday = [{
     "id": 1,
-    "details": {
-        "firstName": "Thomas",
-        "lastName": "Shellberg",
-        "birthday": twoMonthsFromNow,
-        "phone": "(480)555-5555",
-        "email": "thomas@shellberg.com",
-        "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
-    }
+    "firstName": "Thomas",
+    "lastName": "Shellberg",
+    "birthday": twoMonthsFromNow,
+    "phone": "(480)555-5555",
+    "email": "thomas@shellberg.com",
+    "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
   },
   {
     "id": 2,
-    "details": {
-        "firstName": "Frank",
-        "lastName": "Frankerson",
-        "birthday": upcomingBirthday,
-        "phone": "(480)555-5555",
-        "email": "thomas@shellberg.com",
-        "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
-    }
+    "firstName": "Frank",
+    "lastName": "Frankerson",
+    "birthday": upcomingBirthday,
+    "phone": "(480)555-5555",
+    "email": "thomas@shellberg.com",
+    "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
   }]
 
   const upcomingBirthdays = [
     {
       "id": 2,
-      "details": {
           "firstName": "Frank",
           "lastName": "Frankerson",
           "birthday": upcomingBirthday,
           "phone": "(480)555-5555",
           "email": "thomas@shellberg.com",
           "address": "Ruhreckstrasse 39, Hagen, 58099, Germany"
-      }
     }]
   it( 'should sort contacts based on date, ignoring year', () => {
       const state = {

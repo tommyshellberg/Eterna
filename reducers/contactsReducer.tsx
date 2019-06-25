@@ -162,6 +162,7 @@ const getContactsFromDB = (userId) => {
 // @todo rework this without mutating the contacts object. No more tempbirthday!
 
 const sortBirthdaysThirtyDays = ( contacts ) => {
+    console.log('calling sortbirthdays function')
     const now = moment()
     const nextMonth = moment(now).add(1, 'M')
     const filteredContactsArray = contacts
@@ -174,9 +175,8 @@ const sortBirthdaysThirtyDays = ( contacts ) => {
     const isBetweenContacts = filteredContactsArray.filter( contact => 
       moment(contact.tempBirthday).isBetween(now, nextMonth)
     )
-   const sortedContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
-   sortedContacts.map( (x) => delete(x.tempBirthday))
-   return sortedContacts
+   const sortedAndFilteredContacts = _.orderBy(isBetweenContacts, ['tempBirthday'], ['asc'])
+   return sortedAndFilteredContacts
 }
 
 const getProfileData = (userId) => {

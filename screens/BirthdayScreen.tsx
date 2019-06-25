@@ -2,8 +2,6 @@ import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import { ListItem, Text, Card, CardItem } from 'native-base'
 import moment from 'moment'
-import _ from 'lodash'
-
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
@@ -19,31 +17,16 @@ interface State {
 }
 
 class BirthdayScreen extends React.Component<Props, State> {
-
-  constructor(props) {
-    super(props)
-    }
   
-  static navigationOptions = {
-    title: 'Upcoming Birthdays',
-  }
+  static navigationOptions = ({navigation}) => ({
+    title: 'Upcoming Birthdays'
+  })
 
- componentWillMount () {
-    this.props.sortBirthdaysThirtyDays(this.props.contacts)
-  }
-
-  // @todo - if we add a new contact and come back to this screen it doesn't update. We gotta make sure it has updated contacts.
-  componentWillUpdate( prevProps, prevState ) {
-    if ( prevProps.contacts !== this.props.contacts ) {
-      this.props.sortBirthdaysThirtyDays(this.props.contacts)
-    }
-  }
-
-  renderListItem(contact) {
+  renderListItem = (contact) => {
     const { firstName, lastName, birthday } = contact
     return (
       // @todo - just send contact or object with contact? { contact }?
-      <ListItem onPress={() => this.props.navigation.navigate('Profile', { contact } )}>
+      <ListItem onPress={() =>this.props.navigation.navigate('Profile', { contact } )}>
         <Text>{`${firstName} ${lastName} - ${this.getFormattedBirthday(birthday)}`}</Text>
       </ListItem>     
     )
@@ -51,10 +34,6 @@ class BirthdayScreen extends React.Component<Props, State> {
 
   getFormattedBirthday = (date) => {
     return moment(date).format("MMMM Do")
-  }
-
-  convertObjToArray = (obj) => {
-    return _.values(obj)
   }
 
   noBirthdaysPrompt = () => {
@@ -68,17 +47,17 @@ class BirthdayScreen extends React.Component<Props, State> {
   }
 
   _keyExtractor = (item, index) => item.id;
-
+    
   render() {
     return (
       <View style={styles.container}>
-        { this.props.upcomingBirthdays.length > 0 && <FlatList
+        {this.props.upcomingBirthdays.length > 0 && <FlatList
           data={this.props.upcomingBirthdays}
-          renderItem = { ({item}) => this.renderListItem(item) }
+          renderItem = { ({item}) =>this.renderListItem(item) }
           keyExtractor={this._keyExtractor}
           /> 
         }
-        { this.props.upcomingBirthdays.length === 0 && this.noBirthdaysPrompt() }
+        {this.props.upcomingBirthdays.length === 0 && this.noBirthdaysPrompt() }
       </View>
     )
   }
