@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "shellberg CRM",
-    "slug": "shellCRM-native",
+    "name": "Eterna",
+    "slug": "eterna",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [
@@ -12,7 +12,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/sunbgimage.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
