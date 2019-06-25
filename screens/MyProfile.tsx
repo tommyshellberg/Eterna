@@ -37,12 +37,12 @@ class ProfileScreen extends React.Component<Props, State> {
   constructor(props) {
     super(props)
     this.state = {
-      firstName: this.props.me.firstName,
-      lastName: this.props.me.lastName,
-      birthday:  this.props.me.birthday,
-      phone: this.props.me.phone,
-      email: this.props.me.email,
-      address: this.props.me.address,
+      firstName: this.props.me.firstName || '',
+      lastName: this.props.me.lastName || '',
+      birthday:  this.props.me.birthday || new Date(),
+      phone: this.props.me.phone || '',
+      email: this.props.me.email || '',
+      address: this.props.me.address || '',
       loading: false
     }
   }

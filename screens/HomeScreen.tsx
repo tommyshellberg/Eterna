@@ -14,7 +14,7 @@ import { Button, Text, ListItem, Spinner, Card, CardItem } from 'native-base'
 // Redux stuff
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import { getContacts, setUserId, updateContacts, getDbRef, updateProfile, getProfileData } from '../actions/contactsActions'
+import { getContacts, setUserId, updateContacts, getDbRef, updateProfile, getProfileData, sortBirthdaysThirtyDays } from '../actions/contactsActions'
 
 interface Props {
   navigation: any
@@ -26,7 +26,8 @@ interface Props {
   updateContacts: Function
   dbRef: any,
   getProfileData: Function,
-  me: object
+  me: object,
+  sortBirthdaysThirtyDays: Function
 }
 interface State {
   loading: boolean,
@@ -81,15 +82,24 @@ class HomeScreen extends React.Component<Props, State> {
           if (init) init = false
           contacts = _.sortBy( contacts, [ (o) => o.firstName ] )
           this.props.updateContacts(contacts)
+          // @todo - getting all this stuff should first come from cache
+          this.props.sortBirthdaysThirtyDays(contacts)
           this.setState({
             loading: false
           })
         })
         return
     }
+    if( !init && this.props.me !== prevProps.me ) {
+      const me = this.props.me
+      console.log('this is what me looks like')
+      console.log(me)
+      meRef.set(me)
+    }
   }
 
   componentWillMount() {
+    // @todo - if there is a userId but no object at /users/userid we need to create one with their email.
 
   }
 
@@ -112,8 +122,6 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   // @todo: move checkLoginStatus() higher up in the app to force them out of main screen back to auth.
-  // @todo: implement caching for data.
-  // @todo: maybe we can check props.userId before we make any actions(update, add, delete). if it's null go to login page.
 
   checkLoginStatus() {
     firebase.auth().onAuthStateChanged(function(user) {
@@ -142,17 +150,14 @@ class HomeScreen extends React.Component<Props, State> {
   }
 
   syncContacts = () => {
-    // @todo - convert this.props.contacts to a new object tree which is ready to be saved to firebase using contactsRef.set
-    // @todo - perhaps dump the snapshot from the .on() method to see what it looks like.
     // write a test for this.
     const contacts = this.props.contacts
-
+    this.props.sortBirthdaysThirtyDays(contacts)
     const contactsRef =  this.props.dbRef.ref(`users/${this.props.userId}/contacts`)
     contactsRef.set(contacts)
     .then(() => alert('success!'))
     .catch(err => alert('error!'))
   }
-
 
   _keyExtractor = (item, index) => {
     // @todo - the home page items loaded from FB have a different structure than items created from AddNewContact.
@@ -203,7 +208,8 @@ const mapDispatchToProps = dispatch => (
     updateContacts,
     getDbRef,
     updateProfile,
-    getProfileData
+    getProfileData,
+    sortBirthdaysThirtyDays
   }, dispatch)
 );
 
