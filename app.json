@@ -23,7 +23,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tshellberg.eterna"
+    },
+    "android": {
+      "package": "com.tshellberg.eterna"
     }
   }
 }
