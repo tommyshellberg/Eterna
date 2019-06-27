@@ -27,7 +27,8 @@
       "bundleIdentifier": "com.tshellberg.eterna"
     },
     "android": {
-      "package": "com.tshellberg.eterna"
+      "package": "com.tshellberg.eterna",
+      "permissions": []
     }
   }
 }
