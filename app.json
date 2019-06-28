@@ -28,7 +28,8 @@
     },
     "android": {
       "package": "com.tshellberg.eterna",
-      "permissions": []
+      "permissions": [],
+      "versionCode": 2
     }
   }
 }
